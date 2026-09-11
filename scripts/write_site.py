@@ -1,4 +1,9 @@
-<!DOCTYPE html>
+﻿from pathlib import Path
+
+docs_dir = Path("src/frontend/static")
+docs_dir.mkdir(parents=True, exist_ok=True)
+
+html = """<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
@@ -194,13 +199,13 @@ class ConversationChunk(BaseModel):
         </ul>
         <h2>Deterministic Rule Engine Patterns</h2>
         <pre><code class="language-python"># Statutory policy nomenclature
-re.findall(r'\b(Policy\s+[A-Z0-9\-]+|KYC\s+level\s+\d+|Form\s+[A-Z]+)\b', text, re.I)
+re.findall(r'\\b(Policy\\s+[A-Z0-9\\-]+|KYC\\s+level\\s+\\d+|Form\\s+[A-Z]+)\\b', text, re.I)
 
 # Financial thresholds and currency values
-re.findall(r'(\\$\d{1,3}(?:,\d{3})*|\b\d+\s*(?:USD|GBP|EUR)\b)', text)
+re.findall(r'(\\\$\\d{1,3}(?:,\\d{3})*|\\b\\d+\\s*(?:USD|GBP|EUR)\\b)', text)
 
 # Incident routing channels
-re.findall(r'(#[a-zA-Z0-9_\-]+)', text)</code></pre>
+re.findall(r'(#[a-zA-Z0-9_\\-]+)', text)</code></pre>
       </section>
 
       <section id="sec-graph" class="doc-section">
@@ -469,21 +474,21 @@ steps:
         badge.innerText = data.success ? 'PASSED (COMPLIANT)' : 'ESCALATED TO HUMAN';
         badge.style.color = data.success ? '#10b981' : '#f43f5e';
 
-        let formattedOutput = 'Execution Status: ' + (data.success ? 'SUCCESS' : 'ESCALATED') + '\n';
-        formattedOutput += 'Skill ID: ' + data.skill_id + '\n';
+        let formattedOutput = 'Execution Status: ' + (data.success ? 'SUCCESS' : 'ESCALATED') + '\\n';
+        formattedOutput += 'Skill ID: ' + data.skill_id + '\\n';
         if (data.escalation_reason) {
-          formattedOutput += 'Escalation Reason: ' + data.escalation_reason + '\n';
+          formattedOutput += 'Escalation Reason: ' + data.escalation_reason + '\\n';
         }
-        formattedOutput += '\nTrace Audits:\n';
+        formattedOutput += '\\nTrace Audits:\\n';
         data.traces.forEach(t => {
-          formattedOutput += '  [' + t.status + '] ' + t.step_id + '\n';
-          formattedOutput += '    Output: ' + t.output_message + '\n';
-          formattedOutput += '    Guard: ' + t.guard_evaluated + '\n';
+          formattedOutput += '  [' + t.status + '] ' + t.step_id + '\\n';
+          formattedOutput += '    Output: ' + t.output_message + '\\n';
+          formattedOutput += '    Guard: ' + t.guard_evaluated + '\\n';
         });
 
         output.innerText = formattedOutput;
       } catch (err) {
-        output.innerText = 'System Error: Failed to contact local SER service at :8000\nDetails: ' + err.message;
+        output.innerText = 'System Error: Failed to contact local SER service at :8000\\nDetails: ' + err.message;
         badge.innerText = 'ERROR';
         badge.style.color = '#f43f5e';
       }
@@ -496,3 +501,7 @@ steps:
   </script>
 </body>
 </html>
+"""
+
+Path("src/frontend/static/index.html").write_text(html, encoding="utf-8")
+print("Wrote index.html successfully")
