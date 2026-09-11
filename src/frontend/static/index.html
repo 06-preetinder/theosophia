@@ -3,347 +3,356 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Theosophia - Autonomous Enterprise Knowledge Brain</title>
+  <title>Theosophia &bull; Enterprise Institutional Knowledge Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="/static/dribbble.css">
+  <link rel="stylesheet" href="/static/institutional.css">
 </head>
-<body class="flex h-screen w-screen overflow-hidden text-sm bg-[#080c14] text-slate-200">
+<body class="flex h-screen w-screen overflow-hidden text-sm bg-[#f4f6f9] text-[#111827]">
 
-  <!-- Left Sidebar (Dribbble Glassmorphism Style) -->
-  <aside class="w-64 border-r border-white/5 bg-[#0b101c]/80 backdrop-blur-xl flex flex-col justify-between p-4 z-20 flex-shrink-0">
+  <!-- J.P. Morgan Midnight Navy Left Sidebar -->
+  <aside class="w-64 bg-[#0a1128] text-white flex flex-col justify-between p-5 z-20 flex-shrink-0 shadow-2xl">
     <div class="space-y-6">
-      <!-- App Brand -->
-      <div class="flex items-center gap-3 px-2 py-2">
-        <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 p-[1px] shadow-lg shadow-indigo-500/25">
-          <div class="h-full w-full bg-[#0b101c] rounded-xl flex items-center justify-center font-bold text-white tracking-wider">
+      <!-- Institutional Brand Header -->
+      <div class="flex items-center gap-3 px-1 py-1 border-b border-white/10 pb-4">
+        <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005a9c] to-[#c5a059] p-[2px] shadow-lg">
+          <div class="h-full w-full bg-[#0a1128] rounded-[10px] flex items-center justify-center font-bold text-white text-base">
             &#920;
           </div>
         </div>
         <div>
           <h1 class="font-extrabold text-sm tracking-tight text-white flex items-center gap-1.5">
-            Theosophia <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">AI</span>
+            Theosophia
+            <span class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-[#c5a059]/20 text-[#e6ca85] border border-[#c5a059]/30">INSTITUTIONAL</span>
           </h1>
-          <p class="text-[11px] text-slate-400 font-medium">Fintech Knowledge Brain</p>
+          <p class="text-[11px] text-slate-400 font-medium">Enterprise Policy Brain</p>
         </div>
       </div>
 
-      <!-- Department Workspace Selector -->
-      <div class="px-2">
-        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5 font-mono">Workspace Division</label>
+      <!-- Department Selector (Canva Style Pill Select) -->
+      <div>
+        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2 font-mono">Operating Division</label>
         <div class="relative">
-          <select id="workspace-select" onchange="onWorkspaceChange(this.value)" class="w-full bg-[#111827] border border-white/10 rounded-lg px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500 appearance-none cursor-pointer">
-            <option value="ALL">All Divisions (Global Brain)</option>
+          <select id="workspace-select" onchange="onWorkspaceChange(this.value)" class="w-full bg-[#16203d] border border-white/10 rounded-xl px-3 py-2.5 text-xs font-semibold text-white focus:outline-none focus:border-[#c5a059] appearance-none cursor-pointer shadow-sm">
+            <option value="ALL">All Enterprise Divisions</option>
             <option value="Compliance">Financial Crime & Compliance (AML)</option>
-            <option value="Disputes">Payments, Chargebacks & Disputes</option>
+            <option value="Disputes">Merchant Disputes & Settlement</option>
             <option value="Onboarding">KYC & Customer Due Diligence</option>
             <option value="Treasury">G10 FX Trading & Treasury Ops</option>
           </select>
-          <div class="absolute right-3 top-2.5 pointer-events-none text-slate-400 text-xs">&#9662;</div>
+          <div class="absolute right-3.5 top-3 pointer-events-none text-slate-400 text-xs">&#9662;</div>
         </div>
       </div>
 
-      <!-- Navigation Tabs -->
-      <nav class="space-y-1 font-medium px-1">
-        <button onclick="switchTab('graph-explorer')" id="tab-btn-graph" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-indigo-600/15 text-white border border-indigo-500/30 transition-all text-left font-semibold">
-          <i data-lucide="network" class="w-4 h-4 text-indigo-400"></i> Knowledge Topology
+      <!-- Navigation Tabs (Canva Friendly Rounded Buttons) -->
+      <nav class="space-y-1.5 font-medium">
+        <button onclick="switchTab('graph-explorer')" id="tab-btn-graph" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-white/10 text-white font-semibold shadow-sm transition-all text-left">
+          <i data-lucide="network" class="w-4 h-4 text-[#7399c6]"></i> Knowledge Topology
         </button>
-        <button onclick="switchTab('skill-runtime')" id="tab-btn-runtime" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-slate-400 hover:text-slate-200 transition-all text-left">
-          <i data-lucide="shield-check" class="w-4 h-4"></i> Autonomous Skill SER
+        <button onclick="switchTab('skill-runtime')" id="tab-btn-runtime" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white transition-all text-left">
+          <i data-lucide="shield-check" class="w-4 h-4 text-slate-400"></i> Autonomous Execution
         </button>
-        <button onclick="switchTab('audit-provenance')" id="tab-btn-audit" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-slate-400 hover:text-slate-200 transition-all text-left">
-          <i data-lucide="file-clock" class="w-4 h-4"></i> SM&CR Audit Log
+        <button onclick="switchTab('audit-provenance')" id="tab-btn-audit" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-slate-400 hover:text-slate-200 transition-all text-left">
+          <i data-lucide="file-clock" class="w-4 h-4 text-slate-400"></i> Regulatory Register
         </button>
-        <a href="/static/index.html#overview" target="_blank" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-slate-400 hover:text-slate-200 transition-all text-left block">
-          <i data-lucide="book-open" class="w-4 h-4"></i> Technical Docs
+        <a href="/static/index.html#overview" target="_blank" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-slate-400 hover:text-slate-200 transition-all text-left block">
+          <i data-lucide="book-open" class="w-4 h-4 text-slate-400"></i> Systems Docx
         </a>
       </nav>
     </div>
 
-    <!-- Tenant Status Footer -->
-    <div class="border-t border-white/5 pt-4 px-2">
-      <div class="flex items-center justify-between text-xs mb-2">
-        <span class="flex items-center gap-1.5 text-emerald-400 font-mono text-[11px]">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> MCP Ready
+    <!-- Institutional Footer Status -->
+    <div class="border-t border-white/10 pt-4 px-1 space-y-2">
+      <div class="flex items-center justify-between text-xs">
+        <span class="flex items-center gap-1.5 text-emerald-400 font-mono text-[11px] font-bold">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> MCP Service Live
         </span>
-        <span class="text-slate-400 text-[10px] font-mono">Tenant A-842</span>
+        <span class="text-slate-400 text-[10px] font-mono">Node ID: 890-F</span>
       </div>
-      <div class="p-2 rounded-lg bg-black/40 border border-white/5 text-[11px] text-slate-400 space-y-0.5 font-mono">
-        <div class="flex justify-between"><span>SLA:</span> <span class="text-slate-200">&lt; 15ms</span></div>
-        <div class="flex justify-between"><span>Guards:</span> <span class="text-emerald-400">Deterministic</span></div>
+      <div class="p-2.5 rounded-xl bg-[#16203d]/80 border border-white/5 text-[11px] text-slate-300 font-mono space-y-0.5">
+        <div class="flex justify-between"><span>SLA Verification:</span> <span class="text-emerald-400 font-bold">&lt; 15ms</span></div>
+        <div class="flex justify-between"><span>Audit Integrity:</span> <span class="text-white font-bold">Enforced</span></div>
       </div>
     </div>
   </aside>
 
-  <!-- Right Main Workspace -->
-  <main class="flex-1 flex flex-col min-w-0 bg-[#080c14] relative overflow-hidden">
-    <!-- Top Bar -->
-    <header class="h-16 border-b border-white/5 px-6 flex items-center justify-between bg-[#0b101c]/40 backdrop-blur-md z-10 flex-shrink-0">
+  <!-- Main Institutional Workspace Area -->
+  <main class="flex-1 flex flex-col min-w-0 bg-[#f4f6f9] relative overflow-hidden">
+    
+    <!-- Top Global App Bar (Canva Bright Header) -->
+    <header class="h-16 bg-white border-b border-[#e5e7eb] px-7 flex items-center justify-between z-10 flex-shrink-0 shadow-sm">
       <div class="flex items-center gap-3">
-        <h2 id="current-view-name" class="font-bold text-base text-white">Interactive Enterprise Graph Navigator</h2>
-        <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-indigo-500/10 text-indigo-400 border border-indigo-500/25">Scale-Ready Cytoscape</span>
+        <h2 id="current-view-name" class="font-extrabold text-base text-[#111827]">Knowledge Topology Navigator</h2>
+        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-[#e0f2fe] text-[#0369a1] border border-[#bae6fd]">Tier-1 Banking Grade</span>
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3.5">
         <div class="relative">
-          <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400"></i>
-          <input id="graph-search-input" onkeyup="onSearchEntity(this.value)" placeholder="Search entity, policy, threshold..." class="bg-[#111827] border border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder:text-slate-400 w-56 focus:outline-none focus:border-indigo-500 font-mono" />
+          <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-2.5 text-slate-400"></i>
+          <input id="graph-search-input" onkeyup="onSearchEntity(this.value)" placeholder="Search policies, limits, actors..." class="bg-[#f8fafc] border border-[#cbd5e1] rounded-full pl-9 pr-4 py-1.5 text-xs text-[#111827] placeholder:text-slate-400 w-64 focus:outline-none focus:border-[#005a9c] font-mono shadow-inner" />
         </div>
-        <button onclick="refreshGraph()" class="p-2 rounded-lg bg-[#111827] hover:bg-white/10 text-slate-300 border border-white/10 cursor-pointer" title="Reset View">
-          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+        <button onclick="refreshGraph()" class="px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 text-slate-600 border border-slate-300 text-xs font-semibold flex items-center gap-1.5 shadow-sm cursor-pointer transition-all">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset
         </button>
       </div>
     </header>
 
-    <!-- Dynamic Workspace Container -->
-    <div class="flex-1 p-5 overflow-hidden flex flex-col min-h-0 relative">
-      <!-- TAB 1: KNOWLEDGE TOPOLOGY EXPLORER -->
+    <!-- Content Viewport -->
+    <div class="flex-1 p-6 overflow-hidden flex flex-col min-h-0 relative">
+      <!-- TAB 1: KNOWLEDGE TOPOLOGY (Canva Studio Layout with JPM/Goldman Accents) -->
       <div id="tab-content-graph" class="h-full flex flex-col min-h-0 space-y-4">
         
-        <!-- Filter Controls Bar (Scale & Density Control) -->
-        <div class="flex items-center justify-between bg-[#0e1424]/90 p-3 rounded-xl border border-white/5 flex-shrink-0">
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-semibold text-slate-400 mr-1 flex items-center gap-1.5 font-mono">
-              <i data-lucide="filter" class="w-3.5 h-3.5 text-indigo-400"></i> Entity Filters:
+        <!-- Canva Style Filter Bar with Clean Rounded Chips -->
+        <div class="canva-card p-3 flex items-center justify-between flex-shrink-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono mr-1 flex items-center gap-1">
+              <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-[#005a9c]"></i> Filters:
             </span>
-            <button onclick="toggleTypeFilter('Policy')" id="btn-filter-policy" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/40 cursor-pointer transition-all">
-              ● Policies
+            <button onclick="toggleTypeFilter('Policy')" id="btn-filter-policy" class="filter-chip active">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#002244]"></span> Policies
             </button>
-            <button onclick="toggleTypeFilter('Threshold')" id="btn-filter-threshold" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 cursor-pointer transition-all">
-              ● Thresholds
+            <button onclick="toggleTypeFilter('Threshold')" id="btn-filter-threshold" class="filter-chip active">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#059669]"></span> Limits & Thresholds
             </button>
-            <button onclick="toggleTypeFilter('Person')" id="btn-filter-person" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 cursor-pointer transition-all">
-              ● People
+            <button onclick="toggleTypeFilter('Person')" id="btn-filter-person" class="filter-chip active">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#0284c7]"></span> Principals
             </button>
-            <button onclick="toggleTypeFilter('Channel')" id="btn-filter-channel" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/40 cursor-pointer transition-all">
-              ● Channels
+            <button onclick="toggleTypeFilter('Channel')" id="btn-filter-channel" class="filter-chip active">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#cc0000]"></span> Escalations (Bain Red)
             </button>
-            <button onclick="toggleTypeFilter('System')" id="btn-filter-system" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/40 cursor-pointer transition-all">
-              ● Systems
+            <button onclick="toggleTypeFilter('System')" id="btn-filter-system" class="filter-chip active">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#c5a059]"></span> Gateways (Goldman)
             </button>
           </div>
 
-          <div class="flex items-center gap-3">
-            <div class="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
-              <span>Depth:</span>
-              <select id="hop-depth" onchange="onDepthChange(this.value)" class="bg-[#111827] border border-white/10 rounded px-2 py-0.5 text-xs text-white">
-                <option value="1">1-Hop Neighborhood</option>
-                <option value="2" selected>2-Hop Cluster</option>
-                <option value="ALL">Full Subgraph</option>
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 text-xs text-slate-600 font-semibold font-mono">
+              <span>View Depth:</span>
+              <select id="hop-depth" onchange="onDepthChange(this.value)" class="bg-[#f8fafc] border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-800 font-bold focus:outline-none focus:border-[#005a9c] cursor-pointer">
+                <option value="1">1-Hop Local Context</option>
+                <option value="2" selected>2-Hop Process Cluster</option>
+                <option value="ALL">Full Enterprise Topology</option>
               </select>
             </div>
-            <div class="h-4 w-[1px] bg-white/10"></div>
-            <span id="node-count-badge" class="text-[11px] font-mono text-slate-400">19 Nodes &bull; 19 Edges</span>
+            <div class="h-4 w-[1px] bg-slate-200"></div>
+            <span id="node-count-badge" class="text-xs font-mono font-bold text-[#005a9c] bg-[#f0f9ff] px-3 py-1 rounded-full border border-[#bae6fd]">
+              19 Nodes &bull; 19 Edges
+            </span>
           </div>
         </div>
 
-        <!-- Graph Canvas + Right Slideout Inspector Drawer -->
-        <div class="flex-1 min-h-0 relative rounded-xl border border-white/5 overflow-hidden flex">
-          <!-- The Cytoscape Canvas -->
+        <!-- Graph Studio Workspace (White Light Grid Canvas + Floating Canva Detail Card) -->
+        <div class="flex-1 min-h-0 relative canva-card overflow-hidden flex">
+          <!-- Cytoscape Canvas Container -->
           <div id="cy" class="flex-1 h-full"></div>
 
-          <!-- Node Focus Drawer -->
-          <div id="graph-drawer" class="w-80 border-l border-white/10 bg-[#0e1424]/95 backdrop-blur-2xl p-5 flex flex-col justify-between hidden z-10 custom-scrollbar overflow-y-auto">
-            <div class="space-y-4">
-              <div class="flex items-start justify-between">
+          <!-- Canva Rounded Detail Card (Slides in on Click) -->
+          <div id="graph-drawer" class="w-88 border-l border-slate-200 bg-white/95 backdrop-blur-md p-6 flex flex-col justify-between hidden z-10 custom-scrollbar overflow-y-auto shadow-2xl">
+            <div class="space-y-5">
+              <div class="flex items-start justify-between border-b border-slate-100 pb-3">
                 <div>
-                  <span id="drawer-type-badge" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-purple-500/20 text-purple-300 border border-purple-500/30">Policy</span>
-                  <h3 id="drawer-title" class="font-bold text-white text-base mt-2">Policy REF-04</h3>
+                  <span id="drawer-type-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-extrabold uppercase tracking-wider bg-[#002244] text-white">POLICY</span>
+                  <h3 id="drawer-title" class="font-extrabold text-[#111827] text-lg mt-2 leading-tight">Policy REF-04</h3>
                 </div>
-                <button onclick="closeDrawer()" class="p-1 rounded text-slate-400 hover:text-white cursor-pointer">&#10005;</button>
+                <button onclick="closeDrawer()" class="h-7 w-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 font-bold cursor-pointer transition-all">&#10005;</button>
               </div>
 
-              <div class="space-y-3 text-xs">
-                <div class="bg-black/30 p-3 rounded-lg border border-white/5">
-                  <div class="text-[10px] uppercase font-mono text-slate-400 mb-1">Knowledge Verification Confidence</div>
-                  <div class="flex items-center justify-between">
-                    <div class="w-36 h-2 bg-slate-800 rounded-full overflow-hidden">
-                      <div id="drawer-confidence-bar" class="h-full bg-emerald-500 rounded-full" style="width: 96%"></div>
+              <div class="space-y-4 text-xs">
+                <!-- Confidence Metric -->
+                <div class="bg-[#f8fafc] p-4 rounded-xl border border-slate-200">
+                  <div class="text-[10px] uppercase font-mono font-bold text-slate-500 mb-1.5">Verification Integrity Rating</div>
+                  <div class="flex items-center justify-between gap-3">
+                    <div class="flex-1 h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                      <div id="drawer-confidence-bar" class="h-full bg-[#059669] rounded-full" style="width: 96%"></div>
                     </div>
-                    <span id="drawer-confidence-text" class="font-mono text-emerald-400 font-bold text-xs">0.96</span>
+                    <span id="drawer-confidence-text" class="font-mono text-[#059669] font-extrabold text-sm">0.96</span>
                   </div>
                 </div>
 
+                <!-- Linked Dependencies -->
                 <div>
-                  <div class="text-[10px] uppercase font-mono text-slate-400 mb-1">Connected Graph Relations</div>
-                  <div id="drawer-relations" class="space-y-1.5 font-mono text-[11px] max-h-40 overflow-y-auto custom-scrollbar"></div>
+                  <div class="text-[10px] uppercase font-mono font-bold text-slate-500 mb-1.5">Topological Graph Edges</div>
+                  <div id="drawer-relations" class="space-y-1.5 font-mono text-[11px] max-h-48 overflow-y-auto custom-scrollbar"></div>
                 </div>
 
+                <!-- Institutional Metadata -->
                 <div>
-                  <div class="text-[10px] uppercase font-mono text-slate-400 mb-1">Department Metadata</div>
-                  <div id="drawer-metadata" class="bg-black/40 p-2.5 rounded-lg border border-white/5 font-mono text-[11px] text-slate-300"></div>
+                  <div class="text-[10px] uppercase font-mono font-bold text-slate-500 mb-1.5">Institutional Department Properties</div>
+                  <div id="drawer-metadata" class="bg-[#f8fafc] p-3 rounded-xl border border-slate-200 font-mono text-[11px] text-slate-700"></div>
                 </div>
               </div>
             </div>
 
-            <div class="pt-4 border-t border-white/5">
-              <button onclick="compileFromSelectedNode()" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-600/20 cursor-pointer">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Synthesize Agent Skill
+            <!-- Action Button (J.P. Morgan Navy / Goldman Accent) -->
+            <div class="pt-4 border-t border-slate-100">
+              <button onclick="compileFromSelectedNode()" class="w-full py-2.5 bg-[#002244] hover:bg-[#003366] text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#002244]/20 cursor-pointer transition-all">
+                <i data-lucide="sparkles" class="w-4 h-4 text-[#c5a059]"></i> Synthesize Autonomous Skill
               </button>
             </div>
           </div>
         </div>
+
       </div>
-      <!-- TAB 2: SKILL RUNTIME & AGENT SIMULATION (Dribbble Fintech Card Style) -->
+      <!-- TAB 2: AUTONOMOUS EXECUTION (Canva Modern Clean Card Studio) -->
       <div id="tab-content-runtime" class="h-full flex-col min-h-0 space-y-4 hidden">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 h-full min-h-0">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full min-h-0">
           
           <!-- Column Left: Parameters & Context Dispatch -->
-          <div class="lg:col-span-4 bg-[#0e1424]/90 p-5 rounded-xl border border-white/5 flex flex-col justify-between overflow-y-auto custom-scrollbar">
-            <div class="space-y-4">
+          <div class="lg:col-span-4 canva-card p-6 flex flex-col justify-between overflow-y-auto custom-scrollbar">
+            <div class="space-y-5">
               <div>
-                <span class="text-[10px] font-mono uppercase tracking-wider text-indigo-400 font-bold">Autonomous Skill Invocation</span>
-                <h3 class="text-base font-bold text-white mt-1">Skill Execution Runtime</h3>
-                <p class="text-xs text-slate-400 mt-1 leading-relaxed">
-                  Test deterministic execution guards synthesized from your corporate policy graph.
+                <span class="text-[10px] font-mono uppercase tracking-wider text-[#005a9c] font-bold">Policy AST Guardrails</span>
+                <h3 class="text-base font-extrabold text-[#111827] mt-1">Skill Execution Runtime</h3>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                  Evaluate real-time agent transactions against codified bank policies and statutory caps.
                 </p>
               </div>
 
-              <div class="space-y-3.5 text-xs">
+              <div class="space-y-4 text-xs">
                 <div>
-                  <label class="block text-slate-400 font-mono text-[11px] mb-1">Target Compiled Skill</label>
-                  <select id="runtime-skill-select" onchange="onSelectSkill(this.value)" class="w-full bg-[#111827] border border-white/10 rounded-lg px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500">
-                    <option value="Policy REF-04">Policy REF-04 (Merchant Refund & Settlement)</option>
+                  <label class="block text-slate-700 font-bold font-mono text-[11px] mb-1.5">Governing Policy Workflow</label>
+                  <select id="runtime-skill-select" onchange="onSelectSkill(this.value)" class="w-full bg-[#f8fafc] border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#005a9c]">
+                    <option value="Policy REF-04">Policy REF-04 (Merchant Chargeback & Refund)</option>
                     <option value="AML Policy BSA-01">AML Policy BSA-01 (Wire Transfer CTR / SAR)</option>
-                    <option value="FX Overnight Position Limit POL-99">POL-99 (Treasury Desk FX Overnight Cap)</option>
+                    <option value="FX Overnight Position Limit POL-99">POL-99 (Treasury G10 FX Position Cap)</option>
                   </select>
                 </div>
 
                 <div>
-                  <label id="lbl-param-amount" class="block text-slate-400 font-mono text-[11px] mb-1">Transaction Value ($ USD)</label>
-                  <input id="runtime-amount" type="number" value="350" class="w-full bg-[#111827] border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-indigo-500" />
-                  <p id="hint-param-amount" class="text-[10px] text-slate-400 mt-1 font-mono">Statutory guard limit: $500.00</p>
+                  <label id="lbl-param-amount" class="block text-slate-700 font-bold font-mono text-[11px] mb-1.5">Transaction Notional ($ USD)</label>
+                  <input id="runtime-amount" type="number" value="350" class="w-full bg-[#f8fafc] border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono font-bold text-slate-800 focus:outline-none focus:border-[#005a9c]" />
+                  <p id="hint-param-amount" class="text-[10px] text-slate-500 mt-1 font-mono">Statutory guard limit: $500.00</p>
                 </div>
 
                 <div>
-                  <label class="block text-slate-400 font-mono text-[11px] mb-1">Identity Verification (KYC Level)</label>
-                  <select id="runtime-kyc" class="w-full bg-[#111827] border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-indigo-500">
-                    <option value="2" selected>Tier 2: Full Government ID Verified (Pass)</option>
-                    <option value="1">Tier 1: Basic Email / Unverified (Fail)</option>
+                  <label class="block text-slate-700 font-bold font-mono text-[11px] mb-1.5">Customer Verification (KYC Tier)</label>
+                  <select id="runtime-kyc" class="w-full bg-[#f8fafc] border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono font-bold text-slate-800 focus:outline-none focus:border-[#005a9c]">
+                    <option value="2" selected>Tier 2: Verified Photo ID & Proof of Address (Pass)</option>
+                    <option value="1">Tier 1: Unverified / Basic Email (Fails Guard)</option>
                   </select>
                 </div>
 
                 <div>
-                  <label class="block text-slate-400 font-mono text-[11px] mb-1">Active Fraud Anomaly Flags</label>
-                  <input id="runtime-fraud" type="number" value="0" class="w-full bg-[#111827] border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-indigo-500" />
+                  <label class="block text-slate-700 font-bold font-mono text-[11px] mb-1.5">Active Fraud Anomaly Count</label>
+                  <input id="runtime-fraud" type="number" value="0" class="w-full bg-[#f8fafc] border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono font-bold text-slate-800 focus:outline-none focus:border-[#005a9c]" />
                 </div>
               </div>
             </div>
 
-            <div class="pt-4 border-t border-white/5 mt-4">
-              <button onclick="dispatchSkillExecution()" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:opacity-90 text-white font-bold rounded-lg text-xs shadow-lg shadow-indigo-500/25 transition-all cursor-pointer">
-                Evaluate Deterministic Guards
+            <div class="pt-5 border-t border-slate-100 mt-5">
+              <button onclick="dispatchSkillExecution()" class="w-full py-3 bg-[#002244] hover:bg-[#003366] text-white font-bold rounded-xl text-xs shadow-lg shadow-[#002244]/20 transition-all cursor-pointer">
+                Evaluate Deterministic Policy Guards
               </button>
             </div>
           </div>
 
           <!-- Column Right: Execution Traces & AST Audit View -->
-          <div class="lg:col-span-8 bg-[#0e1424]/90 p-5 rounded-xl border border-white/5 flex flex-col justify-between overflow-hidden">
+          <div class="lg:col-span-8 canva-card p-6 flex flex-col justify-between overflow-hidden">
             <div class="flex-1 flex flex-col min-h-0">
-              <div class="flex items-center justify-between border-b border-white/5 pb-3 mb-3 flex-shrink-0">
-                <div class="flex items-center gap-2">
-                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-                  <span class="font-bold text-sm text-white">Execution Audit Log & Trace</span>
+              <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4 flex-shrink-0">
+                <div class="flex items-center gap-2.5">
+                  <span class="w-3 h-3 rounded-full bg-[#059669]"></span>
+                  <span class="font-extrabold text-sm text-[#111827]">Audit Trail & Execution Telemetry</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span id="runtime-status-pill" class="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-slate-800 text-slate-300">AWAITING TRIGGER</span>
-                  <span id="runtime-confidence-pill" class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Confidence: 0.97</span>
+                  <span id="runtime-status-pill" class="px-3 py-1 rounded-full text-[11px] font-mono font-extrabold bg-slate-100 text-slate-600 border border-slate-200">READY</span>
+                  <span id="runtime-confidence-pill" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#f0fdf4] text-[#166534] border border-[#bbf7d0]">Integrity: 0.97</span>
                 </div>
               </div>
 
               <!-- Traces Stream Container -->
-              <div id="runtime-traces-stream" class="flex-1 overflow-y-auto space-y-2.5 pr-1 custom-scrollbar">
-                <div class="p-4 rounded-xl bg-black/40 border border-white/5 text-xs text-slate-400 font-mono text-center">
-                  Select parameters and click 'Evaluate Deterministic Guards' to simulate real-time agent policy auditing.
+              <div id="runtime-traces-stream" class="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
+                <div class="p-5 rounded-xl bg-[#f8fafc] border border-slate-200 text-xs text-slate-500 font-mono text-center">
+                  Adjust parameter values on the left and click 'Evaluate Deterministic Policy Guards'.
                 </div>
               </div>
             </div>
 
             <!-- AST Guard Footer Info -->
-            <div class="border-t border-white/5 pt-3 mt-3 flex items-center justify-between text-[11px] font-mono text-slate-400 flex-shrink-0">
-              <span>Fail-Closed Safety: Active</span>
+            <div class="border-t border-slate-100 pt-3 mt-3 flex items-center justify-between text-[11px] font-mono text-slate-400 flex-shrink-0">
+              <span>Fail-Closed Posture: Active</span>
               <span>Regulatory Standard: FCA SM&CR / SOC 2 Type II</span>
             </div>
           </div>
 
         </div>
       </div>
-      <!-- TAB 3: AUDIT LOG & COMPLIANCE (Fintech Regulatory Dashboard) -->
-      <div id="tab-content-audit" class="h-full flex-col min-h-0 space-y-4 hidden overflow-y-auto custom-scrollbar">
-        <div class="bg-[#0e1424]/90 p-5 rounded-xl border border-white/5 space-y-4">
-          <div class="flex items-center justify-between border-b border-white/5 pb-4">
+      <!-- TAB 3: REGULATORY REGISTER (Institutional Bank SM&CR Ledger) -->
+      <div id="tab-content-audit" class="h-full flex-col min-h-0 space-y-5 hidden overflow-y-auto custom-scrollbar">
+        <div class="canva-card p-7 space-y-6">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-5">
             <div>
-              <span class="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-wider">Statutory Oversight</span>
-              <h3 class="text-base font-bold text-white mt-1">Senior Managers & Certification Regime (SM&CR) Governance</h3>
-              <p class="text-xs text-slate-400 mt-1">
-                Every autonomous agent decision links directly to an approved policy node, a named executive principal, and a point-in-time graph snapshot.
+              <span class="text-[10px] font-mono text-[#005a9c] font-bold uppercase tracking-wider">Regulatory Compliance Framework</span>
+              <h3 class="text-lg font-extrabold text-[#111827] mt-1">Senior Managers & Certification Regime (SM&CR) Governance</h3>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                Autonomous actions executed by AI agents are legally attributed to named institutional officers with cryptographic provenance.
               </p>
             </div>
-            <span class="px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">
+            <span class="px-3.5 py-1 rounded-full text-xs font-mono bg-[#f0fdf4] text-[#15803d] border border-[#bbf7d0] font-bold">
               100% Attributed
             </span>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-black/40 p-4 rounded-xl border border-white/5">
-              <div class="text-[10px] font-mono uppercase text-slate-400">Total Governed Policies</div>
-              <div class="text-2xl font-extrabold text-white mt-1">4 Enforced</div>
-              <p class="text-[11px] text-emerald-400 mt-2 font-mono">&bull; Zero unmapped actions</p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="bg-[#f8fafc] p-5 rounded-xl border border-slate-200">
+              <div class="text-[10px] font-mono font-bold uppercase text-slate-500">Governed Policy Workflows</div>
+              <div class="text-2xl font-extrabold text-[#002244] mt-1">4 Enforced</div>
+              <p class="text-[11px] text-[#059669] mt-2 font-mono font-semibold">&bull; 0 Unmapped Automated Steps</p>
             </div>
-            <div class="bg-black/40 p-4 rounded-xl border border-white/5">
-              <div class="text-[10px] font-mono uppercase text-slate-400">Escalation Sinks Bound</div>
-              <div class="text-2xl font-extrabold text-purple-400 mt-1">4 Channels</div>
-              <p class="text-[11px] text-purple-300 mt-2 font-mono">&bull; Real-time Slack SLA alerts</p>
+            <div class="bg-[#f8fafc] p-5 rounded-xl border border-slate-200">
+              <div class="text-[10px] font-mono font-bold uppercase text-slate-500">Escalation Channels Bound</div>
+              <div class="text-2xl font-extrabold text-[#cc0000] mt-1">4 Sinks</div>
+              <p class="text-[11px] text-slate-600 mt-2 font-mono font-semibold">&bull; Direct Slack/PagerDuty SLA hooks</p>
             </div>
-            <div class="bg-black/40 p-4 rounded-xl border border-white/5">
-              <div class="text-[10px] font-mono uppercase text-slate-400">Named SM&CR Principals</div>
-              <div class="text-2xl font-extrabold text-cyan-400 mt-1">3 Certified</div>
-              <p class="text-[11px] text-cyan-300 mt-2 font-mono">&bull; Alex M., Elena R., Dave C.</p>
+            <div class="bg-[#f8fafc] p-5 rounded-xl border border-slate-200">
+              <div class="text-[10px] font-mono font-bold uppercase text-slate-500">Certified SM&CR Officers</div>
+              <div class="text-2xl font-extrabold text-[#c5a059] mt-1">3 Named</div>
+              <p class="text-[11px] text-slate-600 mt-2 font-mono font-semibold">&bull; Alex M., Elena R., Dave C.</p>
             </div>
           </div>
 
           <div class="pt-2">
-            <h4 class="text-xs font-bold text-slate-300 font-mono uppercase mb-2">Live Policy Attribution Register</h4>
-            <div class="overflow-x-auto">
+            <h4 class="text-xs font-bold text-slate-700 font-mono uppercase mb-3">Enterprise Governance Register</h4>
+            <div class="overflow-x-auto rounded-xl border border-slate-200">
               <table class="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr class="border-b border-white/10 text-slate-400 font-mono text-[11px]">
-                    <th class="py-2.5 px-3">Policy Node</th>
-                    <th class="py-2.5 px-3">Department</th>
-                    <th class="py-2.5 px-3">Boundary Threshold</th>
-                    <th class="py-2.5 px-3">Named Principal</th>
-                    <th class="py-2.5 px-3">Escalation Sink</th>
-                    <th class="py-2.5 px-3">Audit State</th>
+                <thead class="bg-[#f8fafc]">
+                  <tr class="border-b border-slate-200 text-slate-600 font-mono text-[11px]">
+                    <th class="py-3 px-4">Policy Code</th>
+                    <th class="py-3 px-4">Operating Division</th>
+                    <th class="py-3 px-4">Statutory Cap / Threshold</th>
+                    <th class="py-3 px-4">SM&CR Certified Principal</th>
+                    <th class="py-3 px-4">Incident Escalation Sink</th>
+                    <th class="py-3 px-4">Enforcement State</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-white/5 font-mono text-slate-300">
-                  <tr class="hover:bg-white/[0.02]">
-                    <td class="py-2.5 px-3 text-white font-semibold">Policy REF-04 (Refunds)</td>
-                    <td class="py-2.5 px-3 text-slate-400">Disputes Ops</td>
-                    <td class="py-2.5 px-3 text-emerald-400">&le; $500.00</td>
-                    <td class="py-2.5 px-3 text-cyan-400">Elena Rostova</td>
-                    <td class="py-2.5 px-3 text-purple-400">#risk-chargebacks</td>
-                    <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[10px]">ACTIVE</span></td>
+                <tbody class="divide-y divide-slate-100 font-mono text-slate-700 bg-white">
+                  <tr class="hover:bg-slate-50">
+                    <td class="py-3 px-4 text-[#002244] font-bold">Policy REF-04 (Merchant Chargeback)</td>
+                    <td class="py-3 px-4 text-slate-600">Disputes Ops</td>
+                    <td class="py-3 px-4 text-[#059669] font-bold">&le; $500.00</td>
+                    <td class="py-3 px-4 text-[#005a9c] font-semibold">Elena Rostova (Head of Fraud)</td>
+                    <td class="py-3 px-4 text-[#cc0000] font-semibold">#risk-chargebacks-war-room</td>
+                    <td class="py-3 px-4"><span class="px-2.5 py-0.5 rounded-full bg-[#f0fdf4] text-[#15803d] border border-[#bbf7d0] text-[10px] font-bold">ACTIVE</span></td>
                   </tr>
-                  <tr class="hover:bg-white/[0.02]">
-                    <td class="py-2.5 px-3 text-white font-semibold">AML Policy BSA-01</td>
-                    <td class="py-2.5 px-3 text-slate-400">Compliance</td>
-                    <td class="py-2.5 px-3 text-emerald-400">&le; $50,000.00</td>
-                    <td class="py-2.5 px-3 text-cyan-400">Alex Morgan</td>
-                    <td class="py-2.5 px-3 text-purple-400">#compliance-sar</td>
-                    <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[10px]">ACTIVE</span></td>
+                  <tr class="hover:bg-slate-50">
+                    <td class="py-3 px-4 text-[#002244] font-bold">AML Policy BSA-01 (Wire Transfer)</td>
+                    <td class="py-3 px-4 text-slate-600">Compliance</td>
+                    <td class="py-3 px-4 text-[#059669] font-bold">&le; $50,000.00</td>
+                    <td class="py-3 px-4 text-[#005a9c] font-semibold">Alex Morgan (Chief Compliance)</td>
+                    <td class="py-3 px-4 text-[#cc0000] font-semibold">#compliance-sar-filings</td>
+                    <td class="py-3 px-4"><span class="px-2.5 py-0.5 rounded-full bg-[#f0fdf4] text-[#15803d] border border-[#bbf7d0] text-[10px] font-bold">ACTIVE</span></td>
                   </tr>
-                  <tr class="hover:bg-white/[0.02]">
-                    <td class="py-2.5 px-3 text-white font-semibold">FX Limit POL-99</td>
-                    <td class="py-2.5 px-3 text-slate-400">Treasury Desk</td>
-                    <td class="py-2.5 px-3 text-emerald-400">&le; $5,000,000.00</td>
-                    <td class="py-2.5 px-3 text-cyan-400">Dave Chen</td>
-                    <td class="py-2.5 px-3 text-purple-400">#treasury-risk</td>
-                    <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[10px]">ACTIVE</span></td>
+                  <tr class="hover:bg-slate-50">
+                    <td class="py-3 px-4 text-[#002244] font-bold">FX Overnight Net Exposure POL-99</td>
+                    <td class="py-3 px-4 text-slate-600">Treasury Desk</td>
+                    <td class="py-3 px-4 text-[#059669] font-bold">&le; $5,000,000.00</td>
+                    <td class="py-3 px-4 text-[#005a9c] font-semibold">Dave Chen (Trading Supervisor)</td>
+                    <td class="py-3 px-4 text-[#cc0000] font-semibold">#treasury-risk-escalations</td>
+                    <td class="py-3 px-4"><span class="px-2.5 py-0.5 rounded-full bg-[#f0fdf4] text-[#15803d] border border-[#bbf7d0] text-[10px] font-bold">ACTIVE</span></td>
                   </tr>
                 </tbody>
               </table>
@@ -355,6 +364,6 @@
     </div>
   </main>
 
-  <script src="/static/app.js"></script>
+  <script src="/static/app_institutional.js"></script>
 </body>
 </html>

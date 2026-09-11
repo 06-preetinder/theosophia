@@ -1,0 +1,84 @@
+﻿      <!-- TAB 2: AUTONOMOUS EXECUTION (Canva Modern Clean Card Studio) -->
+      <div id="tab-content-runtime" class="h-full flex-col min-h-0 space-y-4 hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full min-h-0">
+          
+          <!-- Column Left: Parameters & Context Dispatch -->
+          <div class="lg:col-span-4 canva-card p-6 flex flex-col justify-between overflow-y-auto custom-scrollbar">
+            <div class="space-y-5">
+              <div>
+                <span class="text-[10px] font-mono uppercase tracking-wider text-[#005a9c] font-bold">Policy AST Guardrails</span>
+                <h3 class="text-base font-extrabold text-[#111827] mt-1">Skill Execution Runtime</h3>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                  Evaluate real-time agent transactions against codified bank policies and statutory caps.
+                </p>
+              </div>
+
+              <div class="space-y-4 text-xs">
+                <div>
+                  <label class="block text-slate-700 font-bold font-mono text-[11px] mb-1.5">Governing Policy Workflow</label>
+                  <select id="runtime-skill-select" onchange="onSelectSkill(this.value)" class="w-full bg-[#f8fafc] border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#005a9c]">
+                    <option value="Policy REF-04">Policy REF-04 (Merchant Chargeback & Refund)</option>
+                    <option value="AML Policy BSA-01">AML Policy BSA-01 (Wire Transfer CTR / SAR)</option>
+                    <option value="FX Overnight Position Limit POL-99">POL-99 (Treasury G10 FX Position Cap)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label id="lbl-param-amount" class="block text-slate-700 font-bold font-mono text-[11px] mb-1.5">Transaction Notional ($ USD)</label>
+                  <input id="runtime-amount" type="number" value="350" class="w-full bg-[#f8fafc] border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono font-bold text-slate-800 focus:outline-none focus:border-[#005a9c]" />
+                  <p id="hint-param-amount" class="text-[10px] text-slate-500 mt-1 font-mono">Statutory guard limit: $500.00</p>
+                </div>
+
+                <div>
+                  <label class="block text-slate-700 font-bold font-mono text-[11px] mb-1.5">Customer Verification (KYC Tier)</label>
+                  <select id="runtime-kyc" class="w-full bg-[#f8fafc] border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono font-bold text-slate-800 focus:outline-none focus:border-[#005a9c]">
+                    <option value="2" selected>Tier 2: Verified Photo ID & Proof of Address (Pass)</option>
+                    <option value="1">Tier 1: Unverified / Basic Email (Fails Guard)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-slate-700 font-bold font-mono text-[11px] mb-1.5">Active Fraud Anomaly Count</label>
+                  <input id="runtime-fraud" type="number" value="0" class="w-full bg-[#f8fafc] border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono font-bold text-slate-800 focus:outline-none focus:border-[#005a9c]" />
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-5 border-t border-slate-100 mt-5">
+              <button onclick="dispatchSkillExecution()" class="w-full py-3 bg-[#002244] hover:bg-[#003366] text-white font-bold rounded-xl text-xs shadow-lg shadow-[#002244]/20 transition-all cursor-pointer">
+                Evaluate Deterministic Policy Guards
+              </button>
+            </div>
+          </div>
+
+          <!-- Column Right: Execution Traces & AST Audit View -->
+          <div class="lg:col-span-8 canva-card p-6 flex flex-col justify-between overflow-hidden">
+            <div class="flex-1 flex flex-col min-h-0">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4 flex-shrink-0">
+                <div class="flex items-center gap-2.5">
+                  <span class="w-3 h-3 rounded-full bg-[#059669]"></span>
+                  <span class="font-extrabold text-sm text-[#111827]">Audit Trail & Execution Telemetry</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span id="runtime-status-pill" class="px-3 py-1 rounded-full text-[11px] font-mono font-extrabold bg-slate-100 text-slate-600 border border-slate-200">READY</span>
+                  <span id="runtime-confidence-pill" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#f0fdf4] text-[#166534] border border-[#bbf7d0]">Integrity: 0.97</span>
+                </div>
+              </div>
+
+              <!-- Traces Stream Container -->
+              <div id="runtime-traces-stream" class="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
+                <div class="p-5 rounded-xl bg-[#f8fafc] border border-slate-200 text-xs text-slate-500 font-mono text-center">
+                  Adjust parameter values on the left and click 'Evaluate Deterministic Policy Guards'.
+                </div>
+              </div>
+            </div>
+
+            <!-- AST Guard Footer Info -->
+            <div class="border-t border-slate-100 pt-3 mt-3 flex items-center justify-between text-[11px] font-mono text-slate-400 flex-shrink-0">
+              <span>Fail-Closed Posture: Active</span>
+              <span>Regulatory Standard: FCA SM&CR / SOC 2 Type II</span>
+            </div>
+          </div>
+
+        </div>
+      </div>

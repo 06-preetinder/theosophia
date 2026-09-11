@@ -1,0 +1,94 @@
+﻿      <!-- TAB 1: KNOWLEDGE TOPOLOGY (Canva Studio Layout with JPM/Goldman Accents) -->
+      <div id="tab-content-graph" class="h-full flex flex-col min-h-0 space-y-4">
+        
+        <!-- Canva Style Filter Bar with Clean Rounded Chips -->
+        <div class="canva-card p-3 flex items-center justify-between flex-shrink-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono mr-1 flex items-center gap-1">
+              <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-[#005a9c]"></i> Filters:
+            </span>
+            <button onclick="toggleTypeFilter('Policy')" id="btn-filter-policy" class="filter-chip active">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#002244]"></span> Policies
+            </button>
+            <button onclick="toggleTypeFilter('Threshold')" id="btn-filter-threshold" class="filter-chip active">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#059669]"></span> Limits & Thresholds
+            </button>
+            <button onclick="toggleTypeFilter('Person')" id="btn-filter-person" class="filter-chip active">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#0284c7]"></span> Principals
+            </button>
+            <button onclick="toggleTypeFilter('Channel')" id="btn-filter-channel" class="filter-chip active">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#cc0000]"></span> Escalations (Bain Red)
+            </button>
+            <button onclick="toggleTypeFilter('System')" id="btn-filter-system" class="filter-chip active">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#c5a059]"></span> Gateways (Goldman)
+            </button>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 text-xs text-slate-600 font-semibold font-mono">
+              <span>View Depth:</span>
+              <select id="hop-depth" onchange="onDepthChange(this.value)" class="bg-[#f8fafc] border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-800 font-bold focus:outline-none focus:border-[#005a9c] cursor-pointer">
+                <option value="1">1-Hop Local Context</option>
+                <option value="2" selected>2-Hop Process Cluster</option>
+                <option value="ALL">Full Enterprise Topology</option>
+              </select>
+            </div>
+            <div class="h-4 w-[1px] bg-slate-200"></div>
+            <span id="node-count-badge" class="text-xs font-mono font-bold text-[#005a9c] bg-[#f0f9ff] px-3 py-1 rounded-full border border-[#bae6fd]">
+              19 Nodes &bull; 19 Edges
+            </span>
+          </div>
+        </div>
+
+        <!-- Graph Studio Workspace (White Light Grid Canvas + Floating Canva Detail Card) -->
+        <div class="flex-1 min-h-0 relative canva-card overflow-hidden flex">
+          <!-- Cytoscape Canvas Container -->
+          <div id="cy" class="flex-1 h-full"></div>
+
+          <!-- Canva Rounded Detail Card (Slides in on Click) -->
+          <div id="graph-drawer" class="w-88 border-l border-slate-200 bg-white/95 backdrop-blur-md p-6 flex flex-col justify-between hidden z-10 custom-scrollbar overflow-y-auto shadow-2xl">
+            <div class="space-y-5">
+              <div class="flex items-start justify-between border-b border-slate-100 pb-3">
+                <div>
+                  <span id="drawer-type-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-extrabold uppercase tracking-wider bg-[#002244] text-white">POLICY</span>
+                  <h3 id="drawer-title" class="font-extrabold text-[#111827] text-lg mt-2 leading-tight">Policy REF-04</h3>
+                </div>
+                <button onclick="closeDrawer()" class="h-7 w-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 font-bold cursor-pointer transition-all">&#10005;</button>
+              </div>
+
+              <div class="space-y-4 text-xs">
+                <!-- Confidence Metric -->
+                <div class="bg-[#f8fafc] p-4 rounded-xl border border-slate-200">
+                  <div class="text-[10px] uppercase font-mono font-bold text-slate-500 mb-1.5">Verification Integrity Rating</div>
+                  <div class="flex items-center justify-between gap-3">
+                    <div class="flex-1 h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                      <div id="drawer-confidence-bar" class="h-full bg-[#059669] rounded-full" style="width: 96%"></div>
+                    </div>
+                    <span id="drawer-confidence-text" class="font-mono text-[#059669] font-extrabold text-sm">0.96</span>
+                  </div>
+                </div>
+
+                <!-- Linked Dependencies -->
+                <div>
+                  <div class="text-[10px] uppercase font-mono font-bold text-slate-500 mb-1.5">Topological Graph Edges</div>
+                  <div id="drawer-relations" class="space-y-1.5 font-mono text-[11px] max-h-48 overflow-y-auto custom-scrollbar"></div>
+                </div>
+
+                <!-- Institutional Metadata -->
+                <div>
+                  <div class="text-[10px] uppercase font-mono font-bold text-slate-500 mb-1.5">Institutional Department Properties</div>
+                  <div id="drawer-metadata" class="bg-[#f8fafc] p-3 rounded-xl border border-slate-200 font-mono text-[11px] text-slate-700"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Button (J.P. Morgan Navy / Goldman Accent) -->
+            <div class="pt-4 border-t border-slate-100">
+              <button onclick="compileFromSelectedNode()" class="w-full py-2.5 bg-[#002244] hover:bg-[#003366] text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#002244]/20 cursor-pointer transition-all">
+                <i data-lucide="sparkles" class="w-4 h-4 text-[#c5a059]"></i> Synthesize Autonomous Skill
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>

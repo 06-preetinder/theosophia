@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Theosophia &bull; Enterprise Institutional Knowledge Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="/static/institutional.css">
+</head>
+<body class="flex h-screen w-screen overflow-hidden text-sm bg-[#f4f6f9] text-[#111827]">
+
+  <!-- J.P. Morgan Midnight Navy Left Sidebar -->
+  <aside class="w-64 bg-[#0a1128] text-white flex flex-col justify-between p-5 z-20 flex-shrink-0 shadow-2xl">
+    <div class="space-y-6">
+      <!-- Institutional Brand Header -->
+      <div class="flex items-center gap-3 px-1 py-1 border-b border-white/10 pb-4">
+        <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005a9c] to-[#c5a059] p-[2px] shadow-lg">
+          <div class="h-full w-full bg-[#0a1128] rounded-[10px] flex items-center justify-center font-bold text-white text-base">
+            &#920;
+          </div>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-sm tracking-tight text-white flex items-center gap-1.5">
+            Theosophia
+            <span class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-[#c5a059]/20 text-[#e6ca85] border border-[#c5a059]/30">INSTITUTIONAL</span>
+          </h1>
+          <p class="text-[11px] text-slate-400 font-medium">Enterprise Policy Brain</p>
+        </div>
+      </div>
+
+      <!-- Department Selector (Canva Style Pill Select) -->
+      <div>
+        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2 font-mono">Operating Division</label>
+        <div class="relative">
+          <select id="workspace-select" onchange="onWorkspaceChange(this.value)" class="w-full bg-[#16203d] border border-white/10 rounded-xl px-3 py-2.5 text-xs font-semibold text-white focus:outline-none focus:border-[#c5a059] appearance-none cursor-pointer shadow-sm">
+            <option value="ALL">All Enterprise Divisions</option>
+            <option value="Compliance">Financial Crime & Compliance (AML)</option>
+            <option value="Disputes">Merchant Disputes & Settlement</option>
+            <option value="Onboarding">KYC & Customer Due Diligence</option>
+            <option value="Treasury">G10 FX Trading & Treasury Ops</option>
+          </select>
+          <div class="absolute right-3.5 top-3 pointer-events-none text-slate-400 text-xs">&#9662;</div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs (Canva Friendly Rounded Buttons) -->
+      <nav class="space-y-1.5 font-medium">
+        <button onclick="switchTab('graph-explorer')" id="tab-btn-graph" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-white/10 text-white font-semibold shadow-sm transition-all text-left">
+          <i data-lucide="network" class="w-4 h-4 text-[#7399c6]"></i> Knowledge Topology
+        </button>
+        <button onclick="switchTab('skill-runtime')" id="tab-btn-runtime" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white transition-all text-left">
+          <i data-lucide="shield-check" class="w-4 h-4 text-slate-400"></i> Autonomous Execution
+        </button>
+        <button onclick="switchTab('audit-provenance')" id="tab-btn-audit" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-slate-400 hover:text-slate-200 transition-all text-left">
+          <i data-lucide="file-clock" class="w-4 h-4 text-slate-400"></i> Regulatory Register
+        </button>
+        <a href="/static/index.html#overview" target="_blank" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-slate-400 hover:text-slate-200 transition-all text-left block">
+          <i data-lucide="book-open" class="w-4 h-4 text-slate-400"></i> Systems Docx
+        </a>
+      </nav>
+    </div>
+
+    <!-- Institutional Footer Status -->
+    <div class="border-t border-white/10 pt-4 px-1 space-y-2">
+      <div class="flex items-center justify-between text-xs">
+        <span class="flex items-center gap-1.5 text-emerald-400 font-mono text-[11px] font-bold">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> MCP Service Live
+        </span>
+        <span class="text-slate-400 text-[10px] font-mono">Node ID: 890-F</span>
+      </div>
+      <div class="p-2.5 rounded-xl bg-[#16203d]/80 border border-white/5 text-[11px] text-slate-300 font-mono space-y-0.5">
+        <div class="flex justify-between"><span>SLA Verification:</span> <span class="text-emerald-400 font-bold">&lt; 15ms</span></div>
+        <div class="flex justify-between"><span>Audit Integrity:</span> <span class="text-white font-bold">Enforced</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Institutional Workspace Area -->
+  <main class="flex-1 flex flex-col min-w-0 bg-[#f4f6f9] relative overflow-hidden">
+    
+    <!-- Top Global App Bar (Canva Bright Header) -->
+    <header class="h-16 bg-white border-b border-[#e5e7eb] px-7 flex items-center justify-between z-10 flex-shrink-0 shadow-sm">
+      <div class="flex items-center gap-3">
+        <h2 id="current-view-name" class="font-extrabold text-base text-[#111827]">Knowledge Topology Navigator</h2>
+        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-[#e0f2fe] text-[#0369a1] border border-[#bae6fd]">Tier-1 Banking Grade</span>
+      </div>
+
+      <div class="flex items-center gap-3.5">
+        <div class="relative">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-2.5 text-slate-400"></i>
+          <input id="graph-search-input" onkeyup="onSearchEntity(this.value)" placeholder="Search policies, limits, actors..." class="bg-[#f8fafc] border border-[#cbd5e1] rounded-full pl-9 pr-4 py-1.5 text-xs text-[#111827] placeholder:text-slate-400 w-64 focus:outline-none focus:border-[#005a9c] font-mono shadow-inner" />
+        </div>
+        <button onclick="refreshGraph()" class="px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 text-slate-600 border border-slate-300 text-xs font-semibold flex items-center gap-1.5 shadow-sm cursor-pointer transition-all">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset
+        </button>
+      </div>
+    </header>
+
+    <!-- Content Viewport -->
+    <div class="flex-1 p-6 overflow-hidden flex flex-col min-h-0 relative">
