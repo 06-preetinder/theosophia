@@ -1,0 +1,87 @@
+﻿      <!-- TAB 1: KNOWLEDGE TOPOLOGY EXPLORER -->
+      <div id="tab-content-graph" class="h-full flex flex-col min-h-0 space-y-4">
+        
+        <!-- Filter Controls Bar (Scale & Density Control) -->
+        <div class="flex items-center justify-between bg-[#0e1424]/90 p-3 rounded-xl border border-white/5 flex-shrink-0">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-semibold text-slate-400 mr-1 flex items-center gap-1.5 font-mono">
+              <i data-lucide="filter" class="w-3.5 h-3.5 text-indigo-400"></i> Entity Filters:
+            </span>
+            <button onclick="toggleTypeFilter('Policy')" id="btn-filter-policy" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/40 cursor-pointer transition-all">
+              ● Policies
+            </button>
+            <button onclick="toggleTypeFilter('Threshold')" id="btn-filter-threshold" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 cursor-pointer transition-all">
+              ● Thresholds
+            </button>
+            <button onclick="toggleTypeFilter('Person')" id="btn-filter-person" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 cursor-pointer transition-all">
+              ● People
+            </button>
+            <button onclick="toggleTypeFilter('Channel')" id="btn-filter-channel" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/40 cursor-pointer transition-all">
+              ● Channels
+            </button>
+            <button onclick="toggleTypeFilter('System')" id="btn-filter-system" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/40 cursor-pointer transition-all">
+              ● Systems
+            </button>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
+              <span>Depth:</span>
+              <select id="hop-depth" onchange="onDepthChange(this.value)" class="bg-[#111827] border border-white/10 rounded px-2 py-0.5 text-xs text-white">
+                <option value="1">1-Hop Neighborhood</option>
+                <option value="2" selected>2-Hop Cluster</option>
+                <option value="ALL">Full Subgraph</option>
+              </select>
+            </div>
+            <div class="h-4 w-[1px] bg-white/10"></div>
+            <span id="node-count-badge" class="text-[11px] font-mono text-slate-400">19 Nodes &bull; 19 Edges</span>
+          </div>
+        </div>
+
+        <!-- Graph Canvas + Right Slideout Inspector Drawer -->
+        <div class="flex-1 min-h-0 relative rounded-xl border border-white/5 overflow-hidden flex">
+          <!-- The Cytoscape Canvas -->
+          <div id="cy" class="flex-1 h-full"></div>
+
+          <!-- Node Focus Drawer -->
+          <div id="graph-drawer" class="w-80 border-l border-white/10 bg-[#0e1424]/95 backdrop-blur-2xl p-5 flex flex-col justify-between hidden z-10 custom-scrollbar overflow-y-auto">
+            <div class="space-y-4">
+              <div class="flex items-start justify-between">
+                <div>
+                  <span id="drawer-type-badge" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-purple-500/20 text-purple-300 border border-purple-500/30">Policy</span>
+                  <h3 id="drawer-title" class="font-bold text-white text-base mt-2">Policy REF-04</h3>
+                </div>
+                <button onclick="closeDrawer()" class="p-1 rounded text-slate-400 hover:text-white cursor-pointer">&#10005;</button>
+              </div>
+
+              <div class="space-y-3 text-xs">
+                <div class="bg-black/30 p-3 rounded-lg border border-white/5">
+                  <div class="text-[10px] uppercase font-mono text-slate-400 mb-1">Knowledge Verification Confidence</div>
+                  <div class="flex items-center justify-between">
+                    <div class="w-36 h-2 bg-slate-800 rounded-full overflow-hidden">
+                      <div id="drawer-confidence-bar" class="h-full bg-emerald-500 rounded-full" style="width: 96%"></div>
+                    </div>
+                    <span id="drawer-confidence-text" class="font-mono text-emerald-400 font-bold text-xs">0.96</span>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="text-[10px] uppercase font-mono text-slate-400 mb-1">Connected Graph Relations</div>
+                  <div id="drawer-relations" class="space-y-1.5 font-mono text-[11px] max-h-40 overflow-y-auto custom-scrollbar"></div>
+                </div>
+
+                <div>
+                  <div class="text-[10px] uppercase font-mono text-slate-400 mb-1">Department Metadata</div>
+                  <div id="drawer-metadata" class="bg-black/40 p-2.5 rounded-lg border border-white/5 font-mono text-[11px] text-slate-300"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-white/5">
+              <button onclick="compileFromSelectedNode()" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-600/20 cursor-pointer">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Synthesize Agent Skill
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
