@@ -3,367 +3,422 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Theosophia &bull; Enterprise Institutional Knowledge Platform</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Theosophia &bull; Knowledge Cloud (Salesforce Edition)</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/design-system/2.22.1/styles/salesforce-lightning-design-system.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="/static/institutional.css">
+  <link rel="stylesheet" href="/static/salesforce.css">
 </head>
-<body class="flex h-screen w-screen overflow-hidden text-sm bg-[#f4f6f9] text-[#111827]">
+<body class="bg-[#b0c4df]">
 
-  <!-- J.P. Morgan Midnight Navy Left Sidebar -->
-  <aside class="w-64 bg-[#0a1128] text-white flex flex-col justify-between p-5 z-20 flex-shrink-0 shadow-2xl">
-    <div class="space-y-6">
-      <!-- Institutional Brand Header -->
-      <div class="flex items-center gap-3 px-1 py-1 border-b border-white/10 pb-4">
-        <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005a9c] to-[#c5a059] p-[2px] shadow-lg">
-          <div class="h-full w-full bg-[#0a1128] rounded-[10px] flex items-center justify-center font-bold text-white text-base">
-            &#920;
-          </div>
-        </div>
-        <div>
-          <h1 class="font-extrabold text-sm tracking-tight text-white flex items-center gap-1.5">
-            Theosophia
-            <span class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-[#c5a059]/20 text-[#e6ca85] border border-[#c5a059]/30">INSTITUTIONAL</span>
-          </h1>
-          <p class="text-[11px] text-slate-400 font-medium">Enterprise Policy Brain</p>
-        </div>
+  <!-- Salesforce Global Header (Top Dark Navy Bar) -->
+  <header class="slds-global-header">
+    <div class="flex items-center gap-3">
+      <!-- 9-dot App Launcher -->
+      <div class="slds-app-launcher" title="App Launcher">
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
       </div>
-
-      <!-- Department Selector (Canva Style Pill Select) -->
-      <div>
-        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2 font-mono">Operating Division</label>
-        <div class="relative">
-          <select id="workspace-select" onchange="onWorkspaceChange(this.value)" class="w-full bg-[#16203d] border border-white/10 rounded-xl px-3 py-2.5 text-xs font-semibold text-white focus:outline-none focus:border-[#c5a059] appearance-none cursor-pointer shadow-sm">
-            <option value="ALL">All Enterprise Divisions</option>
-            <option value="Compliance">Financial Crime & Compliance (AML)</option>
-            <option value="Disputes">Merchant Disputes & Settlement</option>
-            <option value="Onboarding">KYC & Customer Due Diligence</option>
-            <option value="Treasury">G10 FX Trading & Treasury Ops</option>
-          </select>
-          <div class="absolute right-3.5 top-3 pointer-events-none text-slate-400 text-xs">&#9662;</div>
-        </div>
-      </div>
-
-      <!-- Navigation Tabs (Canva Friendly Rounded Buttons) -->
-      <nav class="space-y-1.5 font-medium">
-        <button onclick="switchTab('graph-explorer')" id="tab-btn-graph" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-white/10 text-white font-semibold shadow-sm transition-all text-left">
-          <i data-lucide="network" class="w-4 h-4 text-[#7399c6]"></i> Knowledge Topology
-        </button>
-        <button onclick="switchTab('skill-runtime')" id="tab-btn-runtime" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white transition-all text-left">
-          <i data-lucide="shield-check" class="w-4 h-4 text-slate-400"></i> Autonomous Execution
-        </button>
-        <button onclick="switchTab('audit-provenance')" id="tab-btn-audit" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-slate-400 hover:text-slate-200 transition-all text-left">
-          <i data-lucide="file-clock" class="w-4 h-4 text-slate-400"></i> Regulatory Register
-        </button>
-        <a href="/static/index.html#overview" target="_blank" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-white/5 text-slate-400 hover:text-slate-200 transition-all text-left block">
-          <i data-lucide="book-open" class="w-4 h-4 text-slate-400"></i> Systems Docx
-        </a>
-      </nav>
-    </div>
-
-    <!-- Institutional Footer Status -->
-    <div class="border-t border-white/10 pt-4 px-1 space-y-2">
-      <div class="flex items-center justify-between text-xs">
-        <span class="flex items-center gap-1.5 text-emerald-400 font-mono text-[11px] font-bold">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> MCP Service Live
+      <!-- Salesforce Cloud Logo & Name -->
+      <div class="flex items-center gap-2">
+        <span class="font-extrabold text-sm tracking-wide text-white flex items-center gap-1.5">
+          <svg class="w-5 h-5 text-[#00a1e0] inline-block" fill="currentColor" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+          Theosophia <span class="text-xs font-normal text-slate-300 font-sans">Knowledge Cloud</span>
         </span>
-        <span class="text-slate-400 text-[10px] font-mono">Node ID: 890-F</span>
-      </div>
-      <div class="p-2.5 rounded-xl bg-[#16203d]/80 border border-white/5 text-[11px] text-slate-300 font-mono space-y-0.5">
-        <div class="flex justify-between"><span>SLA Verification:</span> <span class="text-emerald-400 font-bold">&lt; 15ms</span></div>
-        <div class="flex justify-between"><span>Audit Integrity:</span> <span class="text-white font-bold">Enforced</span></div>
       </div>
     </div>
-  </aside>
 
-  <!-- Main Institutional Workspace Area -->
-  <main class="flex-1 flex flex-col min-w-0 bg-[#f4f6f9] relative overflow-hidden">
-    
-    <!-- Top Global App Bar (Canva Bright Header) -->
-    <header class="h-16 bg-white border-b border-[#e5e7eb] px-7 flex items-center justify-between z-10 flex-shrink-0 shadow-sm">
-      <div class="flex items-center gap-3">
-        <h2 id="current-view-name" class="font-extrabold text-base text-[#111827]">Knowledge Topology Navigator</h2>
-        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-[#e0f2fe] text-[#0369a1] border border-[#bae6fd]">Tier-1 Banking Grade</span>
+    <!-- Global Search -->
+    <div class="flex-1 max-w-md mx-8 relative">
+      <input id="slds-global-search" onkeyup="onSearchEntity(this.value)" placeholder="Search company knowledge, policies, limits..." class="w-full bg-[#002244] border border-[#0176d3]/40 rounded px-3 py-1.5 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:bg-white focus:text-black focus:border-[#0176d3]" />
+    </div>
+
+    <!-- User Profile & Action Tools -->
+    <div class="flex items-center gap-3 text-xs">
+      <span class="flex items-center gap-1 text-emerald-300 font-mono text-[11px]">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span> MCP Server Online
+      </span>
+      <div class="h-4 w-[1px] bg-white/20"></div>
+      <a href="/static/index.html#overview" target="_blank" class="text-white hover:underline text-xs flex items-center gap-1 font-semibold">
+        <i data-lucide="help-circle" class="w-3.5 h-3.5"></i> Setup & Docs
+      </a>
+      <div class="w-7 h-7 rounded-full bg-[#0176d3] text-white flex items-center justify-center font-bold text-xs">
+        PS
+      </div>
+    </div>
+  </header>
+
+  <!-- Salesforce Context Tab Bar (Tabs for Objects) -->
+  <nav class="slds-context-bar">
+    <div class="font-bold text-xs text-slate-700 pr-3 flex items-center gap-1 border-r border-slate-200">
+      <span class="text-[#0176d3] font-extrabold">&#9729;</span> Knowledge Cloud
+    </div>
+    <div onclick="switchTab('graph-view')" id="tab-nav-graph" class="slds-context-bar__item active">
+      Knowledge Graph Studio
+    </div>
+    <div onclick="switchTab('runtime-view')" id="tab-nav-runtime" class="slds-context-bar__item">
+      Skill Execution Runtime (SER)
+    </div>
+    <div onclick="switchTab('compliance-view')" id="tab-nav-compliance" class="slds-context-bar__item">
+      SM&CR Regulatory Register
+    </div>
+    <div onclick="switchTab('records-view')" id="tab-nav-records" class="slds-context-bar__item">
+      Policy Objects & Records
+    </div>
+  </nav>
+
+  <!-- Salesforce Record Page Header Banner (Iconic SLDS Header) -->
+  <div class="slds-page-header">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded bg-[#00a1e0] text-white flex items-center justify-center shadow-sm">
+        <i data-lucide="git-merge" class="w-5 h-5"></i>
+      </div>
+      <div>
+        <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider font-mono">Enterprise Ontology Object</div>
+        <h1 id="slds-header-title" class="text-lg font-bold text-slate-900 leading-tight">Global Financial Knowledge Graph</h1>
+      </div>
+    </div>
+
+    <!-- Actions & Filter Controls -->
+    <div class="flex items-center gap-2">
+      <!-- Division Dropdown -->
+      <div class="flex items-center gap-1.5 text-xs font-semibold text-slate-600 mr-2">
+        <span>Division:</span>
+        <select id="division-dropdown" onchange="onDivisionChange(this.value)" class="bg-white border border-slate-300 rounded px-2.5 py-1 text-xs text-slate-800 font-bold focus:outline-none focus:border-[#0176d3]">
+          <option value="ALL">All Business Units (360&deg; View)</option>
+          <option value="Compliance">Financial Crime & Compliance (AML)</option>
+          <option value="Disputes">Payments & Merchant Disputes</option>
+          <option value="Onboarding">KYC & Customer Due Diligence</option>
+          <option value="Treasury">G10 FX Trading & Treasury Desk</option>
+        </select>
       </div>
 
-      <div class="flex items-center gap-3.5">
-        <div class="relative">
-          <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-2.5 text-slate-400"></i>
-          <input id="graph-search-input" onkeyup="onSearchEntity(this.value)" placeholder="Search policies, limits, actors..." class="bg-[#f8fafc] border border-[#cbd5e1] rounded-full pl-9 pr-4 py-1.5 text-xs text-[#111827] placeholder:text-slate-400 w-64 focus:outline-none focus:border-[#005a9c] font-mono shadow-inner" />
+      <button onclick="refreshGraph()" class="slds-button">
+        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh
+      </button>
+      <button onclick="switchTab('runtime-view')" class="slds-button slds-button--brand">
+        <i data-lucide="play" class="w-3.5 h-3.5"></i> Run Agent Simulation
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Canvas Viewport (SLDS Grid Structure) -->
+  <div class="flex-1 px-4 pb-3 overflow-hidden flex flex-col min-h-0">
+    <!-- TAB 1: KNOWLEDGE GRAPH STUDIO (Salesforce Split View Record Layout) -->
+    <div id="tab-graph-view" class="h-full flex flex-col min-h-0 space-y-2">
+      
+      <!-- SLDS Filter & Zoom Toolbar -->
+      <div class="slds-card p-2.5 flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono mr-1">Filter Objects:</span>
+          <button onclick="toggleTypeFilter('Policy')" id="btn-f-policy" class="px-2.5 py-1 text-xs font-bold rounded bg-[#0176d3] text-white border border-[#0176d3] cursor-pointer">
+            Policies (4)
+          </button>
+          <button onclick="toggleTypeFilter('Threshold')" id="btn-f-threshold" class="px-2.5 py-1 text-xs font-bold rounded bg-[#2e844a] text-white border border-[#2e844a] cursor-pointer">
+            Thresholds (4)
+          </button>
+          <button onclick="toggleTypeFilter('Person')" id="btn-f-person" class="px-2.5 py-1 text-xs font-bold rounded bg-[#00a1e0] text-white border border-[#00a1e0] cursor-pointer">
+            Principals (5)
+          </button>
+          <button onclick="toggleTypeFilter('Channel')" id="btn-f-channel" class="px-2.5 py-1 text-xs font-bold rounded bg-[#ea001e] text-white border border-[#ea001e] cursor-pointer">
+            Escalation Queues (4)
+          </button>
+          <button onclick="toggleTypeFilter('System')" id="btn-f-system" class="px-2.5 py-1 text-xs font-bold rounded bg-[#fe9339] text-white border border-[#fe9339] cursor-pointer">
+            Gateways (2)
+          </button>
         </div>
-        <button onclick="refreshGraph()" class="px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 text-slate-600 border border-slate-300 text-xs font-semibold flex items-center gap-1.5 shadow-sm cursor-pointer transition-all">
-          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset
-        </button>
-      </div>
-    </header>
 
-    <!-- Content Viewport -->
-    <div class="flex-1 p-6 overflow-hidden flex flex-col min-h-0 relative">
-      <!-- TAB 1: KNOWLEDGE TOPOLOGY (Canva Studio Layout with JPM/Goldman Accents) -->
-      <div id="tab-content-graph" class="h-full flex flex-col min-h-0 space-y-4">
+        <!-- Zoom & Physics Controls (Solves messy graphs) -->
+        <div class="flex items-center gap-2 text-xs font-semibold text-slate-700">
+          <span class="font-mono text-slate-500">Physics Layout:</span>
+          <select id="layout-select" onchange="onLayoutChange(this.value)" class="bg-slate-50 border border-slate-300 rounded px-2 py-0.5 text-xs font-bold">
+            <option value="concentric">Concentric (Organized Orbits)</option>
+            <option value="breadthfirst">Hierarchical Tree (Top-Down)</option>
+            <option value="cose">Force Directed (Physics Cluster)</option>
+            <option value="circle">Circular Ring</option>
+          </select>
+          <div class="h-4 w-[1px] bg-slate-200"></div>
+          <button onclick="zoomIn()" class="p-1 rounded bg-slate-100 hover:bg-slate-200" title="Zoom In"><i data-lucide="zoom-in" class="w-3.5 h-3.5"></i></button>
+          <button onclick="zoomOut()" class="p-1 rounded bg-slate-100 hover:bg-slate-200" title="Zoom Out"><i data-lucide="zoom-out" class="w-3.5 h-3.5"></i></button>
+          <button onclick="fitGraph()" class="p-1 rounded bg-slate-100 hover:bg-slate-200" title="Fit to Screen"><i data-lucide="maximize" class="w-3.5 h-3.5"></i></button>
+          <div class="h-4 w-[1px] bg-slate-200"></div>
+          <span id="slds-node-metric" class="text-xs font-mono font-bold text-slate-600">19 Nodes &bull; 19 Edges</span>
+        </div>
+      </div>
+
+      <!-- Salesforce 2-Column Split Workspace (Graph on Left + Lightning Record Detail on Right) -->
+      <div class="flex-1 min-h-0 flex gap-3 overflow-hidden">
         
-        <!-- Canva Style Filter Bar with Clean Rounded Chips -->
-        <div class="canva-card p-3 flex items-center justify-between flex-shrink-0">
-          <div class="flex items-center gap-2 flex-wrap">
-            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono mr-1 flex items-center gap-1">
-              <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-[#005a9c]"></i> Filters:
-            </span>
-            <button onclick="toggleTypeFilter('Policy')" id="btn-filter-policy" class="filter-chip active">
-              <span class="w-2.5 h-2.5 rounded-full bg-[#002244]"></span> Policies
-            </button>
-            <button onclick="toggleTypeFilter('Threshold')" id="btn-filter-threshold" class="filter-chip active">
-              <span class="w-2.5 h-2.5 rounded-full bg-[#059669]"></span> Limits & Thresholds
-            </button>
-            <button onclick="toggleTypeFilter('Person')" id="btn-filter-person" class="filter-chip active">
-              <span class="w-2.5 h-2.5 rounded-full bg-[#0284c7]"></span> Principals
-            </button>
-            <button onclick="toggleTypeFilter('Channel')" id="btn-filter-channel" class="filter-chip active">
-              <span class="w-2.5 h-2.5 rounded-full bg-[#cc0000]"></span> Escalations (Bain Red)
-            </button>
-            <button onclick="toggleTypeFilter('System')" id="btn-filter-system" class="filter-chip active">
-              <span class="w-2.5 h-2.5 rounded-full bg-[#c5a059]"></span> Gateways (Goldman)
-            </button>
-          </div>
-
-          <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2 text-xs text-slate-600 font-semibold font-mono">
-              <span>View Depth:</span>
-              <select id="hop-depth" onchange="onDepthChange(this.value)" class="bg-[#f8fafc] border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-800 font-bold focus:outline-none focus:border-[#005a9c] cursor-pointer">
-                <option value="1">1-Hop Local Context</option>
-                <option value="2" selected>2-Hop Process Cluster</option>
-                <option value="ALL">Full Enterprise Topology</option>
-              </select>
-            </div>
-            <div class="h-4 w-[1px] bg-slate-200"></div>
-            <span id="node-count-badge" class="text-xs font-mono font-bold text-[#005a9c] bg-[#f0f9ff] px-3 py-1 rounded-full border border-[#bae6fd]">
-              19 Nodes &bull; 19 Edges
-            </span>
-          </div>
-        </div>
-
-        <!-- Graph Studio Workspace (White Light Grid Canvas + Floating Canva Detail Card) -->
-        <div class="flex-1 min-h-0 relative canva-card overflow-hidden flex">
-          <!-- Cytoscape Canvas Container -->
+        <!-- Left: Interactive High-Visibility Cytoscape Canvas -->
+        <div class="flex-1 slds-card relative overflow-hidden flex flex-col">
           <div id="cy" class="flex-1 h-full"></div>
-
-          <!-- Canva Rounded Detail Card (Slides in on Click) -->
-          <div id="graph-drawer" class="w-88 border-l border-slate-200 bg-white/95 backdrop-blur-md p-6 flex flex-col justify-between hidden z-10 custom-scrollbar overflow-y-auto shadow-2xl">
-            <div class="space-y-5">
-              <div class="flex items-start justify-between border-b border-slate-100 pb-3">
-                <div>
-                  <span id="drawer-type-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-extrabold uppercase tracking-wider bg-[#002244] text-white">POLICY</span>
-                  <h3 id="drawer-title" class="font-extrabold text-[#111827] text-lg mt-2 leading-tight">Policy REF-04</h3>
-                </div>
-                <button onclick="closeDrawer()" class="h-7 w-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 font-bold cursor-pointer transition-all">&#10005;</button>
-              </div>
-
-              <div class="space-y-4 text-xs">
-                <!-- Confidence Metric -->
-                <div class="bg-[#f8fafc] p-4 rounded-xl border border-slate-200">
-                  <div class="text-[10px] uppercase font-mono font-bold text-slate-500 mb-1.5">Verification Integrity Rating</div>
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="flex-1 h-2.5 bg-slate-200 rounded-full overflow-hidden">
-                      <div id="drawer-confidence-bar" class="h-full bg-[#059669] rounded-full" style="width: 96%"></div>
-                    </div>
-                    <span id="drawer-confidence-text" class="font-mono text-[#059669] font-extrabold text-sm">0.96</span>
-                  </div>
-                </div>
-
-                <!-- Linked Dependencies -->
-                <div>
-                  <div class="text-[10px] uppercase font-mono font-bold text-slate-500 mb-1.5">Topological Graph Edges</div>
-                  <div id="drawer-relations" class="space-y-1.5 font-mono text-[11px] max-h-48 overflow-y-auto custom-scrollbar"></div>
-                </div>
-
-                <!-- Institutional Metadata -->
-                <div>
-                  <div class="text-[10px] uppercase font-mono font-bold text-slate-500 mb-1.5">Institutional Department Properties</div>
-                  <div id="drawer-metadata" class="bg-[#f8fafc] p-3 rounded-xl border border-slate-200 font-mono text-[11px] text-slate-700"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Action Button (J.P. Morgan Navy / Goldman Accent) -->
-            <div class="pt-4 border-t border-slate-100">
-              <button onclick="compileFromSelectedNode()" class="w-full py-2.5 bg-[#002244] hover:bg-[#003366] text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#002244]/20 cursor-pointer transition-all">
-                <i data-lucide="sparkles" class="w-4 h-4 text-[#c5a059]"></i> Synthesize Autonomous Skill
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-      <!-- TAB 2: AUTONOMOUS EXECUTION (Canva Modern Clean Card Studio) -->
-      <div id="tab-content-runtime" class="h-full flex-col min-h-0 space-y-4 hidden">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full min-h-0">
           
-          <!-- Column Left: Parameters & Context Dispatch -->
-          <div class="lg:col-span-4 canva-card p-6 flex flex-col justify-between overflow-y-auto custom-scrollbar">
-            <div class="space-y-5">
+          <!-- Bottom Graph Helper Toolbar -->
+          <div class="h-8 bg-slate-50 border-t border-slate-200 px-3 flex items-center justify-between text-[11px] text-slate-500 font-mono">
+            <span>Left-click: Select Object Record &bull; Scroll: Smooth Zoom &bull; Drag: Pan Stage</span>
+            <span class="text-[#0176d3] font-bold">Theosophia Live Bi-Temporal Topology</span>
+          </div>
+        </div>
+
+        <!-- Right: Salesforce Standard Record Detail Side Panel -->
+        <div id="slds-record-panel" class="w-96 slds-card flex flex-col justify-between overflow-hidden shadow-md">
+          <div class="flex-1 flex flex-col min-h-0">
+            <!-- Record Header -->
+            <div class="slds-card__header">
+              <span class="flex items-center gap-1.5 text-slate-800">
+                <i data-lucide="file-text" class="w-4 h-4 text-[#0176d3]"></i> Record Details
+              </span>
+              <span id="record-type-pill" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-100 text-[#0176d3] border border-blue-200 uppercase">
+                POLICY RECORD
+              </span>
+            </div>
+
+            <!-- Record Fields (Salesforce Standard 2-Column Field Layout) -->
+            <div class="p-4 overflow-y-auto custom-scrollbar flex-1 space-y-4 text-xs">
               <div>
-                <span class="text-[10px] font-mono uppercase tracking-wider text-[#005a9c] font-bold">Policy AST Guardrails</span>
-                <h3 class="text-base font-extrabold text-[#111827] mt-1">Skill Execution Runtime</h3>
-                <p class="text-xs text-slate-500 mt-1 leading-relaxed">
-                  Evaluate real-time agent transactions against codified bank policies and statutory caps.
-                </p>
+                <label class="text-[10px] font-bold uppercase text-slate-500 block font-mono">Primary Record Name</label>
+                <div id="rec-name" class="font-extrabold text-sm text-slate-900 mt-0.5">Policy REF-04 Merchant Dispute</div>
               </div>
 
-              <div class="space-y-4 text-xs">
+              <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded border border-slate-200">
                 <div>
-                  <label class="block text-slate-700 font-bold font-mono text-[11px] mb-1.5">Governing Policy Workflow</label>
-                  <select id="runtime-skill-select" onchange="onSelectSkill(this.value)" class="w-full bg-[#f8fafc] border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#005a9c]">
-                    <option value="Policy REF-04">Policy REF-04 (Merchant Chargeback & Refund)</option>
-                    <option value="AML Policy BSA-01">AML Policy BSA-01 (Wire Transfer CTR / SAR)</option>
-                    <option value="FX Overnight Position Limit POL-99">POL-99 (Treasury G10 FX Position Cap)</option>
-                  </select>
+                  <label class="text-[10px] font-bold uppercase text-slate-500 block font-mono">Confidence</label>
+                  <div id="rec-confidence" class="font-mono font-bold text-emerald-700 text-sm mt-0.5">0.96 (High)</div>
                 </div>
-
                 <div>
-                  <label id="lbl-param-amount" class="block text-slate-700 font-bold font-mono text-[11px] mb-1.5">Transaction Notional ($ USD)</label>
-                  <input id="runtime-amount" type="number" value="350" class="w-full bg-[#f8fafc] border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono font-bold text-slate-800 focus:outline-none focus:border-[#005a9c]" />
-                  <p id="hint-param-amount" class="text-[10px] text-slate-500 mt-1 font-mono">Statutory guard limit: $500.00</p>
-                </div>
-
-                <div>
-                  <label class="block text-slate-700 font-bold font-mono text-[11px] mb-1.5">Customer Verification (KYC Tier)</label>
-                  <select id="runtime-kyc" class="w-full bg-[#f8fafc] border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono font-bold text-slate-800 focus:outline-none focus:border-[#005a9c]">
-                    <option value="2" selected>Tier 2: Verified Photo ID & Proof of Address (Pass)</option>
-                    <option value="1">Tier 1: Unverified / Basic Email (Fails Guard)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="block text-slate-700 font-bold font-mono text-[11px] mb-1.5">Active Fraud Anomaly Count</label>
-                  <input id="runtime-fraud" type="number" value="0" class="w-full bg-[#f8fafc] border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono font-bold text-slate-800 focus:outline-none focus:border-[#005a9c]" />
-                </div>
-              </div>
-            </div>
-
-            <div class="pt-5 border-t border-slate-100 mt-5">
-              <button onclick="dispatchSkillExecution()" class="w-full py-3 bg-[#002244] hover:bg-[#003366] text-white font-bold rounded-xl text-xs shadow-lg shadow-[#002244]/20 transition-all cursor-pointer">
-                Evaluate Deterministic Policy Guards
-              </button>
-            </div>
-          </div>
-
-          <!-- Column Right: Execution Traces & AST Audit View -->
-          <div class="lg:col-span-8 canva-card p-6 flex flex-col justify-between overflow-hidden">
-            <div class="flex-1 flex flex-col min-h-0">
-              <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4 flex-shrink-0">
-                <div class="flex items-center gap-2.5">
-                  <span class="w-3 h-3 rounded-full bg-[#059669]"></span>
-                  <span class="font-extrabold text-sm text-[#111827]">Audit Trail & Execution Telemetry</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span id="runtime-status-pill" class="px-3 py-1 rounded-full text-[11px] font-mono font-extrabold bg-slate-100 text-slate-600 border border-slate-200">READY</span>
-                  <span id="runtime-confidence-pill" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#f0fdf4] text-[#166534] border border-[#bbf7d0]">Integrity: 0.97</span>
+                  <label class="text-[10px] font-bold uppercase text-slate-500 block font-mono">Division</label>
+                  <div id="rec-dept" class="font-bold text-slate-800 text-xs mt-0.5">Disputes & Settlement</div>
                 </div>
               </div>
 
-              <!-- Traces Stream Container -->
-              <div id="runtime-traces-stream" class="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
-                <div class="p-5 rounded-xl bg-[#f8fafc] border border-slate-200 text-xs text-slate-500 font-mono text-center">
-                  Adjust parameter values on the left and click 'Evaluate Deterministic Policy Guards'.
+              <!-- Related Lists (Salesforce Related Records) -->
+              <div>
+                <div class="flex items-center justify-between border-b border-slate-200 pb-1 mb-2">
+                  <span class="font-bold text-slate-700 text-xs flex items-center gap-1">
+                    <i data-lucide="link" class="w-3 h-3 text-[#0176d3]"></i> Related Graph Edges (<span id="rec-edge-count">0</span>)
+                  </span>
+                </div>
+                <div id="rec-relations-list" class="space-y-1.5 font-mono text-[11px] max-h-48 overflow-y-auto custom-scrollbar">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+
+              <!-- Record Attributes Table -->
+              <div>
+                <div class="border-b border-slate-200 pb-1 mb-2 font-bold text-slate-700 text-xs">
+                  Record Metadata Properties
+                </div>
+                <div id="rec-metadata-box" class="bg-white border border-slate-200 rounded p-2.5 font-mono text-[11px] text-slate-700 space-y-1">
+                  <!-- Injected via JS -->
                 </div>
               </div>
             </div>
-
-            <!-- AST Guard Footer Info -->
-            <div class="border-t border-slate-100 pt-3 mt-3 flex items-center justify-between text-[11px] font-mono text-slate-400 flex-shrink-0">
-              <span>Fail-Closed Posture: Active</span>
-              <span>Regulatory Standard: FCA SM&CR / SOC 2 Type II</span>
-            </div>
           </div>
 
-        </div>
-      </div>
-      <!-- TAB 3: REGULATORY REGISTER (Institutional Bank SM&CR Ledger) -->
-      <div id="tab-content-audit" class="h-full flex-col min-h-0 space-y-5 hidden overflow-y-auto custom-scrollbar">
-        <div class="canva-card p-7 space-y-6">
-          <div class="flex items-center justify-between border-b border-slate-100 pb-5">
-            <div>
-              <span class="text-[10px] font-mono text-[#005a9c] font-bold uppercase tracking-wider">Regulatory Compliance Framework</span>
-              <h3 class="text-lg font-extrabold text-[#111827] mt-1">Senior Managers & Certification Regime (SM&CR) Governance</h3>
-              <p class="text-xs text-slate-500 mt-1 leading-relaxed">
-                Autonomous actions executed by AI agents are legally attributed to named institutional officers with cryptographic provenance.
-              </p>
-            </div>
-            <span class="px-3.5 py-1 rounded-full text-xs font-mono bg-[#f0fdf4] text-[#15803d] border border-[#bbf7d0] font-bold">
-              100% Attributed
-            </span>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div class="bg-[#f8fafc] p-5 rounded-xl border border-slate-200">
-              <div class="text-[10px] font-mono font-bold uppercase text-slate-500">Governed Policy Workflows</div>
-              <div class="text-2xl font-extrabold text-[#002244] mt-1">4 Enforced</div>
-              <p class="text-[11px] text-[#059669] mt-2 font-mono font-semibold">&bull; 0 Unmapped Automated Steps</p>
-            </div>
-            <div class="bg-[#f8fafc] p-5 rounded-xl border border-slate-200">
-              <div class="text-[10px] font-mono font-bold uppercase text-slate-500">Escalation Channels Bound</div>
-              <div class="text-2xl font-extrabold text-[#cc0000] mt-1">4 Sinks</div>
-              <p class="text-[11px] text-slate-600 mt-2 font-mono font-semibold">&bull; Direct Slack/PagerDuty SLA hooks</p>
-            </div>
-            <div class="bg-[#f8fafc] p-5 rounded-xl border border-slate-200">
-              <div class="text-[10px] font-mono font-bold uppercase text-slate-500">Certified SM&CR Officers</div>
-              <div class="text-2xl font-extrabold text-[#c5a059] mt-1">3 Named</div>
-              <p class="text-[11px] text-slate-600 mt-2 font-mono font-semibold">&bull; Alex M., Elena R., Dave C.</p>
-            </div>
-          </div>
-
-          <div class="pt-2">
-            <h4 class="text-xs font-bold text-slate-700 font-mono uppercase mb-3">Enterprise Governance Register</h4>
-            <div class="overflow-x-auto rounded-xl border border-slate-200">
-              <table class="w-full text-left text-xs border-collapse">
-                <thead class="bg-[#f8fafc]">
-                  <tr class="border-b border-slate-200 text-slate-600 font-mono text-[11px]">
-                    <th class="py-3 px-4">Policy Code</th>
-                    <th class="py-3 px-4">Operating Division</th>
-                    <th class="py-3 px-4">Statutory Cap / Threshold</th>
-                    <th class="py-3 px-4">SM&CR Certified Principal</th>
-                    <th class="py-3 px-4">Incident Escalation Sink</th>
-                    <th class="py-3 px-4">Enforcement State</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100 font-mono text-slate-700 bg-white">
-                  <tr class="hover:bg-slate-50">
-                    <td class="py-3 px-4 text-[#002244] font-bold">Policy REF-04 (Merchant Chargeback)</td>
-                    <td class="py-3 px-4 text-slate-600">Disputes Ops</td>
-                    <td class="py-3 px-4 text-[#059669] font-bold">&le; $500.00</td>
-                    <td class="py-3 px-4 text-[#005a9c] font-semibold">Elena Rostova (Head of Fraud)</td>
-                    <td class="py-3 px-4 text-[#cc0000] font-semibold">#risk-chargebacks-war-room</td>
-                    <td class="py-3 px-4"><span class="px-2.5 py-0.5 rounded-full bg-[#f0fdf4] text-[#15803d] border border-[#bbf7d0] text-[10px] font-bold">ACTIVE</span></td>
-                  </tr>
-                  <tr class="hover:bg-slate-50">
-                    <td class="py-3 px-4 text-[#002244] font-bold">AML Policy BSA-01 (Wire Transfer)</td>
-                    <td class="py-3 px-4 text-slate-600">Compliance</td>
-                    <td class="py-3 px-4 text-[#059669] font-bold">&le; $50,000.00</td>
-                    <td class="py-3 px-4 text-[#005a9c] font-semibold">Alex Morgan (Chief Compliance)</td>
-                    <td class="py-3 px-4 text-[#cc0000] font-semibold">#compliance-sar-filings</td>
-                    <td class="py-3 px-4"><span class="px-2.5 py-0.5 rounded-full bg-[#f0fdf4] text-[#15803d] border border-[#bbf7d0] text-[10px] font-bold">ACTIVE</span></td>
-                  </tr>
-                  <tr class="hover:bg-slate-50">
-                    <td class="py-3 px-4 text-[#002244] font-bold">FX Overnight Net Exposure POL-99</td>
-                    <td class="py-3 px-4 text-slate-600">Treasury Desk</td>
-                    <td class="py-3 px-4 text-[#059669] font-bold">&le; $5,000,000.00</td>
-                    <td class="py-3 px-4 text-[#005a9c] font-semibold">Dave Chen (Trading Supervisor)</td>
-                    <td class="py-3 px-4 text-[#cc0000] font-semibold">#treasury-risk-escalations</td>
-                    <td class="py-3 px-4"><span class="px-2.5 py-0.5 rounded-full bg-[#f0fdf4] text-[#15803d] border border-[#bbf7d0] text-[10px] font-bold">ACTIVE</span></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <!-- Bottom Action Bar (Salesforce Quick Actions) -->
+          <div class="p-3 bg-slate-50 border-t border-slate-200 flex items-center gap-2">
+            <button onclick="synthesizeSkillFromRecord()" class="flex-1 slds-button slds-button--brand text-xs font-bold py-1.5">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Compile Executable Skill
+            </button>
+            <button onclick="isolateCluster()" class="slds-button text-xs py-1.5" title="Isolate Cluster">
+              <i data-lucide="filter" class="w-3.5 h-3.5"></i> Isolate
+            </button>
           </div>
         </div>
-      </div>
 
+      </div>
     </div>
-  </main>
+    <!-- TAB 2: SKILL EXECUTION RUNTIME (Salesforce Process Automation Console) -->
+    <div id="tab-runtime-view" class="h-full flex-col min-h-0 space-y-3 hidden">
+      <div class="grid grid-cols-12 gap-3 h-full min-h-0">
+        
+        <!-- Parameters Form (Salesforce Case/Transaction Input Card) -->
+        <div class="col-span-4 slds-card flex flex-col justify-between overflow-y-auto custom-scrollbar p-4">
+          <div class="space-y-4">
+            <div class="border-b border-slate-200 pb-2">
+              <span class="text-[10px] font-mono uppercase font-bold text-[#0176d3]">Process Flow Automation</span>
+              <h3 class="text-base font-bold text-slate-900 mt-0.5">Agent Skill Simulation Engine</h3>
+              <p class="text-xs text-slate-500 mt-1">Dispatch live payloads to evaluate deterministic AST guard conditions.</p>
+            </div>
 
-  <script src="/static/app_institutional.js"></script>
+            <div class="space-y-3 text-xs">
+              <div>
+                <label class="block text-slate-700 font-bold mb-1">Target Skill Definition</label>
+                <select id="slds-skill-select" onchange="onSelectSkill(this.value)" class="w-full bg-white border border-slate-300 rounded p-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#0176d3]">
+                  <option value="Policy REF-04">Policy REF-04 (Merchant Chargeback & Refund Workflow)</option>
+                  <option value="AML Policy BSA-01">AML Policy BSA-01 (Wire Transfer CTR / SAR Filing)</option>
+                  <option value="FX Overnight Position Limit POL-99">POL-99 (Treasury Desk FX Overnight Net Exposure)</option>
+                </select>
+              </div>
+
+              <div>
+                <label id="slds-lbl-amount" class="block text-slate-700 font-bold mb-1">Transaction Notional ($ USD)</label>
+                <input id="slds-amount" type="number" value="350" class="w-full bg-white border border-slate-300 rounded p-2 text-xs font-mono font-bold text-slate-900 focus:outline-none focus:border-[#0176d3]" />
+                <p id="slds-hint-amount" class="text-[10px] text-slate-500 mt-1 font-mono">Standard policy limit: $500.00</p>
+              </div>
+
+              <div>
+                <label class="block text-slate-700 font-bold mb-1">Customer Verification (KYC Tier)</label>
+                <select id="slds-kyc" class="w-full bg-white border border-slate-300 rounded p-2 text-xs font-mono font-bold text-slate-900 focus:outline-none focus:border-[#0176d3]">
+                  <option value="2" selected>Tier 2: Verified Photo ID & Address (Pass)</option>
+                  <option value="1">Tier 1: Basic Unverified Email (Fails Guard)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-slate-700 font-bold mb-1">Active Fraud Anomaly Count</label>
+                <input id="slds-fraud" type="number" value="0" class="w-full bg-white border border-slate-300 rounded p-2 text-xs font-mono font-bold text-slate-900 focus:outline-none focus:border-[#0176d3]" />
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-slate-200 mt-4">
+            <button onclick="dispatchSkillExecution()" class="w-full slds-button slds-button--brand py-2 text-xs font-bold shadow-sm">
+              <i data-lucide="play" class="w-3.5 h-3.5"></i> Trigger Agent SER Evaluation
+            </button>
+          </div>
+        </div>
+
+        <!-- Traces & Output (Salesforce Activity Timeline / Execution History) -->
+        <div class="col-span-8 slds-card flex flex-col justify-between overflow-hidden">
+          <div class="slds-card__header">
+            <span class="flex items-center gap-2">
+              <i data-lucide="activity" class="w-4 h-4 text-[#0176d3]"></i> Process Execution Stream & Telemetry
+            </span>
+            <div class="flex items-center gap-2">
+              <span id="slds-status-pill" class="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-slate-100 text-slate-700 border border-slate-300">AWAITING TRIGGER</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Confidence: 0.97</span>
+            </div>
+          </div>
+
+          <div id="slds-traces-stream" class="p-4 overflow-y-auto custom-scrollbar flex-1 space-y-2.5 bg-slate-50/50">
+            <div class="p-4 rounded bg-white border border-slate-200 text-xs text-slate-500 font-mono text-center">
+              Click 'Trigger Agent SER Evaluation' to simulate deterministic AST rule evaluation against the active policy.
+            </div>
+          </div>
+
+          <div class="h-8 bg-slate-100 border-t border-slate-200 px-4 flex items-center justify-between text-[11px] text-slate-600 font-mono">
+            <span>Fail-Closed Security: Enforced</span>
+            <span>Auditing Framework: Immutable Ledger</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- TAB 3: SM&CR COMPLIANCE REGISTER (Salesforce Reports & Dashboards View) -->
+    <div id="tab-compliance-view" class="h-full flex-col min-h-0 space-y-3 hidden overflow-y-auto custom-scrollbar">
+      <div class="slds-card p-4 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div>
+            <span class="text-[10px] font-mono text-[#0176d3] font-bold uppercase tracking-wider">Statutory Compliance Report</span>
+            <h3 class="text-base font-bold text-slate-900 mt-0.5">Senior Managers & Certification Regime (SM&CR) Governance Register</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Formal attribution of AI automated executions to named corporate executives with verifiable SLA escalation sinks.</p>
+          </div>
+          <span class="px-3 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-300 font-mono font-bold text-xs">
+            100% Attributed
+          </span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div class="bg-slate-50 p-3.5 rounded border border-slate-200">
+            <div class="text-[10px] font-mono font-bold uppercase text-slate-500">Active Policies</div>
+            <div class="text-xl font-bold text-[#001639] mt-0.5">4 Enforced</div>
+            <p class="text-[11px] text-emerald-700 mt-1 font-mono font-semibold">&bull; 0 unmanaged shadow actions</p>
+          </div>
+          <div class="bg-slate-50 p-3.5 rounded border border-slate-200">
+            <div class="text-[10px] font-mono font-bold uppercase text-slate-500">Escalation Sinks</div>
+            <div class="text-xl font-bold text-[#ea001e] mt-0.5">4 SLA Queues</div>
+            <p class="text-[11px] text-slate-600 mt-1 font-mono font-semibold">&bull; Real-time webhook dispatch</p>
+          </div>
+          <div class="bg-slate-50 p-3.5 rounded border border-slate-200">
+            <div class="text-[10px] font-mono font-bold uppercase text-slate-500">SM&CR Certified Principals</div>
+            <div class="text-xl font-bold text-[#0176d3] mt-0.5">3 Named Officers</div>
+            <p class="text-[11px] text-slate-600 mt-1 font-mono font-semibold">&bull; Alex M., Elena R., Dave C.</p>
+          </div>
+        </div>
+
+        <!-- Salesforce Table View -->
+        <div class="border border-slate-200 rounded overflow-hidden">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead class="bg-slate-100">
+              <tr class="border-b border-slate-200 text-slate-700 font-bold">
+                <th class="py-2.5 px-3">Policy Record Name</th>
+                <th class="py-2.5 px-3">Business Division</th>
+                <th class="py-2.5 px-3">Boundary Threshold Limit</th>
+                <th class="py-2.5 px-3">Certified Executive Principal</th>
+                <th class="py-2.5 px-3">Incident Escalation Sink</th>
+                <th class="py-2.5 px-3">Enforcement State</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 bg-white font-mono text-slate-800">
+              <tr class="hover:bg-slate-50">
+                <td class="py-2.5 px-3 text-[#0176d3] font-bold">Policy REF-04 (Merchant Chargeback)</td>
+                <td class="py-2.5 px-3 text-slate-600">Disputes Ops</td>
+                <td class="py-2.5 px-3 text-emerald-700 font-bold">&le; $500.00</td>
+                <td class="py-2.5 px-3 font-semibold">Elena Rostova (Head of Risk)</td>
+                <td class="py-2.5 px-3 text-[#ea001e] font-semibold">#risk-chargebacks-war-room</td>
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">ACTIVE</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="py-2.5 px-3 text-[#0176d3] font-bold">AML Policy BSA-01 (Wire Transfer)</td>
+                <td class="py-2.5 px-3 text-slate-600">Compliance</td>
+                <td class="py-2.5 px-3 text-emerald-700 font-bold">&le; $50,000.00</td>
+                <td class="py-2.5 px-3 font-semibold">Alex Morgan (Chief Compliance)</td>
+                <td class="py-2.5 px-3 text-[#ea001e] font-semibold">#compliance-sar-filings</td>
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">ACTIVE</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="py-2.5 px-3 text-[#0176d3] font-bold">FX Limit POL-99 (Treasury Net Open)</td>
+                <td class="py-2.5 px-3 text-slate-600">Treasury Desk</td>
+                <td class="py-2.5 px-3 text-emerald-700 font-bold">&le; $5,000,000.00</td>
+                <td class="py-2.5 px-3 font-semibold">Dave Chen (Desk Head)</td>
+                <td class="py-2.5 px-3 text-[#ea001e] font-semibold">#treasury-risk-escalations</td>
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">ACTIVE</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: POLICY OBJECTS & RECORDS (Salesforce Standard Object List View) -->
+    <div id="tab-records-view" class="h-full flex-col min-h-0 space-y-3 hidden overflow-y-auto custom-scrollbar">
+      <div class="slds-card p-4 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2.5">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">All Knowledge Object Records (19)</h3>
+            <p class="text-xs text-slate-500">Consolidated tabular ledger of all discovered domain entities in corporate memory.</p>
+          </div>
+          <button onclick="switchTab('graph-view')" class="slds-button text-xs">
+            <i data-lucide="network" class="w-3.5 h-3.5"></i> View in Graph Studio
+          </button>
+        </div>
+
+        <div class="border border-slate-200 rounded overflow-hidden">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead class="bg-slate-100">
+              <tr class="border-b border-slate-200 text-slate-700 font-bold font-mono">
+                <th class="py-2 px-3">Object ID</th>
+                <th class="py-2 px-3">Type</th>
+                <th class="py-2 px-3">Canonical Name</th>
+                <th class="py-2 px-3">Division</th>
+                <th class="py-2 px-3">Confidence Rating</th>
+                <th class="py-2 px-3">Action</th>
+              </tr>
+            </thead>
+            <tbody id="slds-records-table-body" class="divide-y divide-slate-200 font-mono text-slate-800">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/static/app_salesforce.js"></script>
 </body>
 </html>
