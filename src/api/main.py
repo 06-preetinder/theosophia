@@ -1,13 +1,16 @@
 """
 Theosophia FastAPI Server
-Exposes REST and Model Context Protocol (MCP) endpoints for querying knowledge and executing skills.
+Exposes REST, MCP, and serves the static Single Page Application (SPA) dashboard.
 """
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Optional
+from pathlib import Path
 from src.config import settings
-from src.graph.local_graph import LocalGraphDB
+from src.graph.local_graph import LocalGraphDB, GraphNode, GraphEdge
 from src.skills.compiler import SkillCompiler, ExecutableSkill
 from src.skills.executor import SkillExecutor, SkillExecutionResult
 
@@ -17,9 +20,35 @@ app = FastAPI(
     version="0.1.0"
 )
 
+# Persistent graph DB instance
 graph_db = LocalGraphDB(settings.DATA_DIR / "theosophia_graph.db")
+
+# Pre-populate sample graph if empty for immediate visual demonstration
+if len(graph_db.get_all_nodes()) == 0:
+    graph_db.merge_node(GraphNode(id="pol_ref04", label="Policy", name="Policy REF-04", confidence=0.95))
+    graph_db.merge_node(GraphNode(id="thresh_500", label="Threshold", name="$500", confidence=0.98))
+    graph_db.merge_node(GraphNode(id="chan_disputes", label="Channel", name="#risk-disputes", confidence=0.99))
+    graph_db.merge_node(GraphNode(id="officer_alex", label="Person", name="Alex_ComplianceOfficer", confidence=1.0))
+    graph_db.merge_node(GraphNode(id="lead_sarah", label="Person", name="Sarah_SupportLead", confidence=1.0))
+    graph_db.merge_node(GraphNode(id="kyc_l2", label="Policy", name="KYC Level 2", confidence=0.95))
+
+    graph_db.merge_edge(GraphEdge(source_id="pol_ref04", target_id="thresh_500", rel_type="DEFINES_THRESHOLD", confidence=0.95))
+    graph_db.merge_edge(GraphEdge(source_id="pol_ref04", target_id="chan_disputes", rel_type="ESCALATES_TO", confidence=0.92))
+    graph_db.merge_edge(GraphEdge(source_id="officer_alex", target_id="pol_ref04", rel_type="GOVERNS", confidence=1.0))
+    graph_db.merge_edge(GraphEdge(source_id="lead_sarah", target_id="pol_ref04", rel_type="EXECUTES", confidence=0.9))
+    graph_db.merge_edge(GraphEdge(source_id="pol_ref04", target_id="kyc_l2", rel_type="PREREQUISITE_FOR", confidence=0.94))
+
 compiler = SkillCompiler(graph_db)
 executor = SkillExecutor()
+
+# Mount frontend static directory
+frontend_static_dir = Path(__file__).resolve().parent.parent / "frontend" / "static"
+app.mount("/static", StaticFiles(directory=str(frontend_static_dir)), name="static")
+
+@app.get("/")
+def serve_ui():
+    """Serve the single page dashboard."""
+    return FileResponse(str(frontend_static_dir / "index.html"))
 
 class ExecuteSkillRequest(BaseModel):
     parameters: Dict[str, Any] = Field(default_factory=dict)
@@ -56,7 +85,6 @@ def compile_skill(policy_name: str = Query(..., description="Target policy or pr
 @app.post("/v1/skills/{skill_id}/execute", response_model=SkillExecutionResult)
 def execute_skill(skill_id: str, request: ExecuteSkillRequest):
     """Execute synthesized skill with guard auditing."""
-    # Find base policy name from skill_id
     policy_name = skill_id.replace("skill_", "").replace("_", " ")
     skill = compiler.compile_skill_from_domain(policy_name)
     if not skill:

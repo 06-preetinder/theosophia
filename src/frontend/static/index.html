@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Theosophia | Enterprise Company Brain</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Cytoscape.js for interactive knowledge graph visualization -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      background-color: #0b0f19;
+      color: #e2e8f0;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    #cy {
+      width: 100%;
+      height: 480px;
+      background: radial-gradient(circle, #151d30 10%, #0b0f19 90%);
+      border-radius: 0.75rem;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #111827;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #374151;
+      border-radius: 3px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #4b5563;
+    }
+  </style>
+</head>
+<body class="flex h-screen overflow-hidden text-sm">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-slate-900/90 border-r border-slate-800 flex flex-col justify-between p-4 z-20">
+    <div>
+      <div class="flex items-center gap-3 px-2 py-3 mb-6 border-b border-slate-800/80">
+        <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <i data-lucide="brain" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-base tracking-wide text-white">Theosophia</h1>
+          <p class="text-[11px] font-mono text-purple-400">Company Brain v0.1</p>
+        </div>
+      </div>
+
+      <nav class="space-y-1.5 font-medium">
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 transition-all text-left">
+          <i data-lucide="layout-grid" class="w-4 h-4"></i> Dashboard
+        </button>
+        <button onclick="switchTab('graph')" id="nav-graph" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800/50 text-slate-400 hover:text-slate-200 transition-all text-left">
+          <i data-lucide="network" class="w-4 h-4"></i> Knowledge Graph
+        </button>
+        <button onclick="switchTab('skills')" id="nav-skills" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800/50 text-slate-400 hover:text-slate-200 transition-all text-left">
+          <i data-lucide="cpu" class="w-4 h-4"></i> Executable Skills
+        </button>
+        <button onclick="switchTab('simulation')" id="nav-simulation" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800/50 text-slate-400 hover:text-slate-200 transition-all text-left">
+          <i data-lucide="play-circle" class="w-4 h-4"></i> Agent Sandbox
+        </button>
+      </nav>
+    </div>
+
+    <div class="border-t border-slate-800/80 pt-4 px-2">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="text-xs text-slate-400 font-mono">MCP Gateway Active</span>
+      </div>
+      <div class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800 text-[11px] text-slate-400 font-mono">
+        Port: 8000 (FastAPI)<br/>
+        Graph: Neo4j / Local<br/>
+        Tenant: fintech_default
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Workspace Area -->
+  <main class="flex-1 flex flex-col min-w-0 bg-[#0b0f19] overflow-hidden">
+
+    <!-- Top Header -->
+    <header class="h-16 border-b border-slate-800 px-6 flex items-center justify-between bg-slate-900/40 backdrop-blur-md">
+      <div class="flex items-center gap-4">
+        <h2 id="view-title" class="text-lg font-semibold text-white">System Overview & Metrics</h2>
+        <span class="px-2.5 py-0.5 text-xs rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/30">Phase 0 MVP</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="triggerIngestion()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs transition-all cursor-pointer">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Sync Slack Ingestion
+        </button>
+        <button onclick="triggerCompile()" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-medium shadow-md shadow-indigo-500/20 text-xs transition-all cursor-pointer">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Synthesize Skill
+        </button>
+      </div>
+    </header>
+
+    <!-- Scrollable Workspace Viewport -->
+    <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scroll">
+
+      <!-- SECTION: DASHBOARD -->
+      <section id="section-dashboard" class="space-y-6">
+        <!-- Metric Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 relative overflow-hidden">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-xs text-slate-400 font-medium">Ingested Messages</p>
+                <p id="stat-messages" class="text-2xl font-bold text-white mt-1">11</p>
+              </div>
+              <div class="p-2 bg-indigo-500/10 text-indigo-400 rounded-lg"><i data-lucide="message-square" class="w-4 h-4"></i></div>
+            </div>
+            <p class="text-[11px] text-emerald-400 mt-3 flex items-center gap-1 font-mono">3 channels active</p>
+          </div>
+
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 relative overflow-hidden">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-xs text-slate-400 font-medium">Domain Entities (Nodes)</p>
+                <p id="stat-nodes" class="text-2xl font-bold text-purple-400 mt-1">14</p>
+              </div>
+              <div class="p-2 bg-purple-500/10 text-purple-400 rounded-lg"><i data-lucide="boxes" class="w-4 h-4"></i></div>
+            </div>
+            <p class="text-[11px] text-purple-300 mt-3 font-mono">Policies, Thresholds, Teams</p>
+          </div>
+
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 relative overflow-hidden">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-xs text-slate-400 font-medium">Extracted Relations</p>
+                <p id="stat-edges" class="text-2xl font-bold text-cyan-400 mt-1">5</p>
+              </div>
+              <div class="p-2 bg-cyan-500/10 text-cyan-400 rounded-lg"><i data-lucide="git-fork" class="w-4 h-4"></i></div>
+            </div>
+            <p class="text-[11px] text-cyan-300 mt-3 font-mono">Governed Edges</p>
+          </div>
+
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 relative overflow-hidden">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-xs text-slate-400 font-medium">Confidence Score</p>
+                <p id="stat-confidence" class="text-2xl font-bold text-emerald-400 mt-1">97%</p>
+              </div>
+              <div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg"><i data-lucide="shield-check" class="w-4 h-4"></i></div>
+            </div>
+            <p class="text-[11px] text-emerald-300 mt-3 font-mono">Bi-Temporal Guard High</p>
+          </div>
+        </div>
+
+        <!-- Overview Split Panels -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Graph Teaser View -->
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center mb-3">
+                <h3 class="font-semibold text-white flex items-center gap-2">
+                  <i data-lucide="share-2" class="w-4 h-4 text-purple-400"></i> Discovered Knowledge Graph
+                </h3>
+                <button onclick="switchTab('graph')" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 cursor-pointer">
+                  Expand interactive graph <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+              <p class="text-xs text-slate-400 mb-4 leading-relaxed">
+                Autonomous knowledge extraction continuously mines Slack threads and documentation to form living property graphs linking policies, thresholds, actors, and fallback channels.
+              </p>
+            </div>
+            <div class="p-4 bg-slate-950/80 rounded-lg border border-slate-800/80 font-mono text-xs space-y-2">
+              <div class="text-slate-300"> (Policy REF-04) <span class="text-purple-400">-[:DEFINES_THRESHOLD]-&gt;</span> ($500)</div>
+              <div class="text-slate-300"> (Policy REF-04) <span class="text-indigo-400">-[:ESCALATES_TO]-&gt;</span> (#risk-disputes)</div>
+              <div class="text-slate-300"> (KYC Level 2) <span class="text-emerald-400">-[:PREREQUISITE_FOR]-&gt;</span> (Direct Auto-Refund)</div>
+            </div>
+          </div>
+
+          <!-- Active Compiled Skills Preview -->
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center mb-3">
+                <h3 class="font-semibold text-white flex items-center gap-2">
+                  <i data-lucide="file-code" class="w-4 h-4 text-emerald-400"></i> Synthesized Executable Skills
+                </h3>
+                <button onclick="switchTab('skills')" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 cursor-pointer">
+                  Inspect specification <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+              <p class="text-xs text-slate-400 mb-4 leading-relaxed">
+                Executable skills compiled into deterministic YAML specifications with safety guards, financial thresholds, and automatic human escalation paths.
+              </p>
+            </div>
+            <div class="p-4 bg-slate-950/80 rounded-lg border border-slate-800/80 font-mono text-xs space-y-2">
+              <div class="flex justify-between text-slate-200 font-bold">
+                <span>skill_policy_ref_04</span>
+                <span class="text-emerald-400 text-[11px] bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">READY (97%)</span>
+              </div>
+              <p class="text-slate-400 text-[11px]">3 steps: KYC check &#8594; $500 threshold guard &#8594; Payment gateway reversal</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: KNOWLEDGE GRAPH VISUALIZER -->
+      <section id="section-graph" class="space-y-4 hidden">
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 class="text-base font-semibold text-white">Live Knowledge Topology</h3>
+            <p class="text-xs text-slate-400">Interactive Cytoscape node-edge diagram representing corporate memory.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 text-xs text-slate-300 mr-2">
+              <span class="w-3 h-3 rounded-full bg-purple-500 inline-block"></span> Policy
+              <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block ml-2"></span> Threshold
+              <span class="w-3 h-3 rounded-full bg-blue-500 inline-block ml-2"></span> Person
+              <span class="w-3 h-3 rounded-full bg-rose-500 inline-block ml-2"></span> Channel
+            </span>
+            <button onclick="renderGraph()" class="px-2.5 py-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded border border-slate-700 cursor-pointer">
+              Relayout
+            </button>
+          </div>
+        </div>
+
+        <div class="relative">
+          <div id="cy" class="border border-slate-800 shadow-2xl"></div>
+          <div id="node-inspector" class="absolute top-4 right-4 w-72 bg-slate-900/90 backdrop-blur-md border border-slate-800 p-4 rounded-xl shadow-xl hidden">
+            <h4 id="inspector-title" class="font-bold text-white text-sm mb-1">Entity Details</h4>
+            <p id="inspector-type" class="text-xs text-purple-400 font-mono mb-2">Policy</p>
+            <div id="inspector-content" class="text-xs text-slate-300 space-y-1.5 font-mono"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: EXECUTABLE SKILLS -->
+      <section id="section-skills" class="space-y-4 hidden">
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 class="text-base font-semibold text-white">Compiled Skill Specification</h3>
+            <p class="text-xs text-slate-400">Deterministic YAML schema ready for execution by AI agents via MCP protocol.</p>
+          </div>
+          <button onclick="triggerCompile()" class="px-3 py-1.5 text-xs bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="refresh-ccw" class="w-3.5 h-3.5"></i> Re-compile from Graph
+          </button>
+        </div>
+
+        <div class="bg-slate-900/70 border border-slate-800 rounded-xl p-5">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+            <div>
+              <span class="font-mono text-sm font-bold text-white">skill_policy_ref_04.yaml</span>
+              <span class="ml-2 text-xs text-slate-400">(Auto-compiled from Policy REF-04)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">Confidence: 0.97</span>
+              <span class="px-2.5 py-0.5 rounded text-xs bg-purple-500/10 text-purple-400 border border-purple-500/20 font-mono">Domain: Fintech</span>
+            </div>
+          </div>
+          <pre id="yaml-display" class="bg-slate-950 p-4 rounded-lg font-mono text-xs text-emerald-300 overflow-x-auto custom-scroll leading-relaxed border border-slate-800/80"></pre>
+        </div>
+      </section>
+
+      <!-- SECTION: AGENT SIMULATION SANDBOX -->
+      <section id="section-simulation" class="space-y-6 hidden">
+        <div>
+          <h3 class="text-base font-semibold text-white">AI Agent Execution Runtime (SER)</h3>
+          <p class="text-xs text-slate-400">Simulate incoming agent requests against compiled domain skills with real-time guard audits.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Parameter Form -->
+          <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-800 space-y-4">
+            <h4 class="font-semibold text-white text-sm">Execution Payload</h4>
+
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Target Skill</label>
+              <input type="text" value="skill_policy_ref_04" disabled class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-1.5 text-xs text-slate-300 font-mono" />
+            </div>
+
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Requested Refund Amount ($ USD)</label>
+              <input id="sim-amount" type="number" value="350" class="w-full bg-slate-950 border border-slate-700 focus:border-indigo-500 rounded px-3 py-1.5 text-xs text-white font-mono focus:outline-none" />
+              <p class="text-[10px] text-slate-500 mt-1">Statutory policy limit: $500.00</p>
+            </div>
+
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Customer KYC Tier Level</label>
+              <select id="sim-kyc" class="w-full bg-slate-950 border border-slate-700 focus:border-indigo-500 rounded px-3 py-1.5 text-xs text-white font-mono focus:outline-none">
+                <option value="2" selected>Level 2 (Verified Identity - Pass)</option>
+                <option value="1">Level 1 (Basic/Unverified - Fail)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Active Fraud Flags Count</label>
+              <input id="sim-fraud" type="number" value="0" class="w-full bg-slate-950 border border-slate-700 focus:border-indigo-500 rounded px-3 py-1.5 text-xs text-white font-mono focus:outline-none" />
+            </div>
+
+            <button onclick="runSimulation()" class="w-full py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold rounded-lg text-xs shadow-lg shadow-indigo-500/20 transition-all cursor-pointer">
+              Trigger Agent Execution
+            </button>
+          </div>
+
+          <!-- Execution Audit Traces Output -->
+          <div class="lg:col-span-2 bg-slate-900/60 p-5 rounded-xl border border-slate-800 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center mb-3">
+                <h4 class="font-semibold text-white text-sm flex items-center gap-2">
+                  <i data-lucide="terminal" class="w-4 h-4 text-emerald-400"></i> Deterministic Audit Traces
+                </h4>
+                <span id="sim-outcome-badge" class="px-2.5 py-0.5 rounded text-[11px] font-mono bg-slate-800 text-slate-300">Ready</span>
+              </div>
+              <p class="text-xs text-slate-400 mb-4">Real-time trace logs reflecting each guard evaluation, condition check, and escalation route.</p>
+
+              <div id="sim-traces" class="space-y-2 font-mono text-xs max-h-72 overflow-y-auto custom-scroll">
+                <div class="p-3 bg-slate-950 rounded-lg border border-slate-800/80 text-slate-400">
+                  Awaiting execution request. Adjust payload and click 'Trigger Agent Execution'.
+                </div>
+              </div>
+            </div>
+
+            <div class="border-t border-slate-800/80 pt-3 mt-4 text-[11px] text-slate-500 font-mono flex justify-between">
+              <span>Guard Engine: Deterministic Safety Check</span>
+              <span>Audit Logging: Immutable</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    let currentTab = 'dashboard';
+    let cyInstance = null;
+
+    function switchTab(tabId) {
+      currentTab = tabId;
+      document.querySelectorAll('nav button').forEach(b => {
+        b.className = 'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800/50 text-slate-400 hover:text-slate-200 transition-all text-left';
+      });
+      document.getElementById(`nav-${tabId}`).className = 'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 transition-all text-left';
+
+      document.getElementById('section-dashboard').classList.add('hidden');
+      document.getElementById('section-graph').classList.add('hidden');
+      document.getElementById('section-skills').classList.add('hidden');
+      document.getElementById('section-simulation').classList.add('hidden');
+
+      document.getElementById(`section-${tabId}`).classList.remove('hidden');
+
+      const titles = {
+        dashboard: 'System Overview & Metrics',
+        graph: 'Knowledge Graph Topology',
+        skills: 'Executable Skills Specification',
+        simulation: 'Agent Execution Runtime'
+      };
+      document.getElementById('view-title').innerText = titles[tabId];
+
+      if (tabId === 'graph') {
+        setTimeout(renderGraph, 100);
+      } else if (tabId === 'skills') {
+        loadSkillYaml();
+      }
+    }
+
+    async function loadSkillYaml() {
+      try {
+        const res = await fetch('/v1/skills/compile?policy_name=Policy REF-04', { method: 'POST' });
+        const data = await res.json();
+        
+        let yamlStr = `id: ${data.id}\nversion: ${data.version}\ndescription: ${data.description}\nconfidence: ${data.confidence}\nsource_policy: "${data.source_policy}"\nescalation_channel: "${data.escalation_channel}"\nsteps:\n`;
+        data.steps.forEach(s => {
+          yamlStr += `  - id: ${s.id}\n    action: ${s.action}\n    guard: "${s.guard || ''}"\n    fallback: ${s.fallback}\n    description: "${s.description}"\n`;
+        });
+        document.getElementById('yaml-display').innerText = yamlStr;
+      } catch (err) {
+        document.getElementById('yaml-display').innerText = "# Error fetching skill from backend";
+      }
+    }
+
+    async function renderGraph() {
+      try {
+        const res = await fetch('/v1/knowledge/graph');
+        const data = await res.json();
+
+        const elements = [];
+        data.nodes.forEach(n => {
+          elements.push({
+            data: {
+              id: n.id,
+              name: n.name,
+              label: n.label,
+              confidence: n.confidence
+            }
+          });
+        });
+
+        data.edges.forEach((e, idx) => {
+          elements.push({
+            data: {
+              id: `edge_${idx}`,
+              source: e.source_id,
+              target: e.target_id,
+              label: e.rel_type
+            }
+          });
+        });
+
+        cyInstance = cytoscape({
+          container: document.getElementById('cy'),
+          elements: elements,
+          style: [
+            {
+              selector: 'node',
+              style: {
+                'label': 'data(name)',
+                'color': '#f8fafc',
+                'font-size': '11px',
+                'text-valign': 'bottom',
+                'text-margin-y': 5,
+                'background-color': function(ele) {
+                  const lbl = (ele.data('label') || '').toLowerCase();
+                  if (lbl === 'policy') return '#a855f7';
+                  if (lbl === 'threshold') return '#10b981';
+                  if (lbl === 'person') return '#3b82f6';
+                  if (lbl === 'channel') return '#f43f5e';
+                  return '#64748b';
+                },
+                'width': 26,
+                'height': 26,
+                'border-width': 2,
+                'border-color': '#ffffff'
+              }
+            },
+            {
+              selector: 'edge',
+              style: {
+                'label': 'data(label)',
+                'color': '#94a3b8',
+                'font-size': '9px',
+                'curve-style': 'bezier',
+                'target-arrow-shape': 'triangle',
+                'target-arrow-color': '#64748b',
+                'line-color': '#334155',
+                'width': 1.5
+              }
+            }
+          ],
+          layout: {
+            name: 'cose',
+            animate: false,
+            padding: 40
+          }
+        });
+
+        cyInstance.on('tap', 'node', function(evt){
+          const node = evt.target;
+          document.getElementById('node-inspector').classList.remove('hidden');
+          document.getElementById('inspector-title').innerText = node.data('name');
+          document.getElementById('inspector-type').innerText = `Node Label: ${node.data('label')}`;
+          document.getElementById('inspector-content').innerHTML = `
+            <div>ID: <span class="text-slate-200">${node.data('id')}</span></div>
+            <div>Confidence: <span class="text-emerald-400 font-bold">${node.data('confidence')}</span></div>
+            <div class="text-[10px] text-slate-400 mt-2">Source: Verified corporate communications</div>
+          `;
+        });
+
+      } catch (e) {
+        console.error("Failed to render graph:", e);
+      }
+    }
+
+    async function runSimulation() {
+      const amount = parseFloat(document.getElementById('sim-amount').value);
+      const kyc = parseInt(document.getElementById('sim-kyc').value);
+      const fraud = parseInt(document.getElementById('sim-fraud').value);
+
+      const res = await fetch('/v1/skills/skill_policy_ref_04/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          parameters: {
+            amount: amount,
+            kyc_level: kyc,
+            active_fraud_flags: fraud
+          },
+          dry_run: true
+        })
+      });
+
+      const data = await res.json();
+      const badge = document.getElementById('sim-outcome-badge');
+      const tracesContainer = document.getElementById('sim-traces');
+
+      if (data.success) {
+        badge.className = "px-2.5 py-0.5 rounded text-[11px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
+        badge.innerText = "SUCCESS (APPROVED)";
+      } else {
+        badge.className = "px-2.5 py-0.5 rounded text-[11px] font-mono bg-rose-500/10 text-rose-400 border border-rose-500/30";
+        badge.innerText = "ESCALATED TO HUMAN";
+      }
+
+      tracesContainer.innerHTML = '';
+      data.traces.forEach(t => {
+        const isPass = t.status === 'PASSED';
+        const card = document.createElement('div');
+        card.className = `p-3 rounded-lg border ${isPass ? 'bg-slate-950 border-emerald-500/30' : 'bg-rose-950/20 border-rose-500/40'}`;
+        card.innerHTML = `
+          <div class="flex justify-between items-center mb-1">
+            <span class="font-bold ${isPass ? 'text-emerald-400' : 'text-rose-400'}">[${t.status}] ${t.step_id}</span>
+            <span class="text-[10px] text-slate-500">${t.action}</span>
+          </div>
+          <p class="text-slate-300 text-xs">${t.output_message}</p>
+          <p class="text-[10px] text-slate-500 mt-1 font-mono">Guard: ${t.guard_evaluated}</p>
+        `;
+        tracesContainer.appendChild(card);
+      });
+    }
+
+    function triggerIngestion() {
+      alert("Triggering batch Slack ingestion... Syncing raw messages into SQLite.");
+    }
+
+    function triggerCompile() {
+      switchTab('skills');
+    }
+
+    // Initialize lucide icons on load
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
