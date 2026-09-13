@@ -133,19 +133,37 @@
 
         <!-- Zoom & Physics Controls (Solves messy graphs) -->
         <div class="flex items-center gap-2 text-xs font-semibold text-slate-700">
-          <span class="font-mono text-slate-500">Physics Layout:</span>
-          <select id="layout-select" onchange="onLayoutChange(this.value)" class="bg-slate-50 border border-slate-300 rounded px-2 py-0.5 text-xs font-bold">
+          <span class="font-mono text-slate-500">Layout:</span>
+          <select id="layout-select" onchange="onLayoutChange(this.value)" class="bg-slate-50 border border-slate-300 rounded px-2 py-0.5 text-xs font-bold focus:outline-none focus:border-[#0176d3]">
             <option value="concentric">Concentric (Organized Orbits)</option>
             <option value="breadthfirst">Hierarchical Tree (Top-Down)</option>
             <option value="cose">Force Directed (Physics Cluster)</option>
             <option value="circle">Circular Ring</option>
           </select>
           <div class="h-4 w-[1px] bg-slate-200"></div>
-          <button onclick="zoomIn()" class="p-1 rounded bg-slate-100 hover:bg-slate-200" title="Zoom In"><i data-lucide="zoom-in" class="w-3.5 h-3.5"></i></button>
-          <button onclick="zoomOut()" class="p-1 rounded bg-slate-100 hover:bg-slate-200" title="Zoom Out"><i data-lucide="zoom-out" class="w-3.5 h-3.5"></i></button>
-          <button onclick="fitGraph()" class="p-1 rounded bg-slate-100 hover:bg-slate-200" title="Fit to Screen"><i data-lucide="maximize" class="w-3.5 h-3.5"></i></button>
+
+          <!-- Spacing Spread Slider -->
+          <div class="flex items-center gap-1.5 font-mono text-slate-500 text-xs" title="Adjust distance and separation between nodes">
+            <span>Spacing:</span>
+            <input type="range" id="spacing-slider" min="1.0" max="3.0" step="0.2" value="1.8" oninput="onSpacingChange(this.value)" class="w-16 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0176d3]" />
+            <span id="spacing-val" class="font-bold text-slate-700 min-w-[28px]">1.8x</span>
+          </div>
           <div class="h-4 w-[1px] bg-slate-200"></div>
-          <span id="slds-node-metric" class="text-xs font-mono font-bold text-slate-600">19 Nodes &bull; 19 Edges</span>
+
+          <!-- Edge Labels Checkbox -->
+          <label class="flex items-center gap-1 text-xs font-semibold text-slate-700 cursor-pointer select-none" title="Toggle relationship names on edges">
+            <input type="checkbox" id="chk-edge-labels" onchange="toggleEdgeLabels(this.checked)" class="rounded accent-[#0176d3]" />
+            <span>Edge Labels</span>
+          </label>
+          <div class="h-4 w-[1px] bg-slate-200"></div>
+
+          <!-- Zoom, Center & Expand Buttons -->
+          <button onclick="zoomIn()" class="p-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700" title="Zoom In"><i data-lucide="zoom-in" class="w-3.5 h-3.5"></i></button>
+          <button onclick="zoomOut()" class="p-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700" title="Zoom Out"><i data-lucide="zoom-out" class="w-3.5 h-3.5"></i></button>
+          <button onclick="fitGraph()" class="p-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700" title="Fit to Screen"><i data-lucide="maximize" class="w-3.5 h-3.5"></i></button>
+          <button onclick="toggleRecordPanel()" id="btn-toggle-panel" class="p-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700" title="Toggle Detail Panel (Full Width Canvas)"><i data-lucide="panel-right" class="w-3.5 h-3.5"></i></button>
+          <div class="h-4 w-[1px] bg-slate-200"></div>
+          <span id="slds-node-metric" class="text-xs font-mono font-bold text-slate-600 whitespace-nowrap">19 Nodes &bull; 19 Edges</span>
         </div>
       </div>
 

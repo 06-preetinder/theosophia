@@ -3,6 +3,10 @@ let fullGraphData = { nodes: [], edges: [] };
 let cy = null;
 let activeDivision = 'ALL';
 let currentLayout = 'concentric';
+let showEdgeLabels = false;
+let spacingMultiplier = 1.8;
+let isPanelCollapsed = false;
+
 let activeTypeFilters = {
   Policy: true,
   Threshold: true,
@@ -22,7 +26,8 @@ function switchTab(tabId) {
     'records-view': 'Standard Knowledge Policy Objects & Records'
   };
 
-  document.getElementById('slds-header-title').innerText = titles[tabId] || 'Workspace';
+  const titleEl = document.getElementById('slds-header-title');
+  if (titleEl) titleEl.innerText = titles[tabId] || 'Workspace';
 
   tabs.forEach(t => {
     const el = document.getElementById(`tab-${t}`);
@@ -40,7 +45,7 @@ function switchTab(tabId) {
     setTimeout(() => {
       cy.resize();
       cy.fit();
-    }, 100);
+    }, 120);
   } else if (tabId === 'records-view') {
     populateRecordsTable();
   }
@@ -57,7 +62,7 @@ async function loadGraphData() {
   }
 }
 
-// Render Graph with Clean Salesforce Aesthetics and Predictable Geometry
+// Render Graph with Clean Salesforce Aesthetics, Non-Overlapping Labels and Generous Spacing
 function renderSalesforceGraph() {
   const container = document.getElementById('cy');
   if (!container) return;
@@ -78,7 +83,10 @@ function renderSalesforceGraph() {
     return visibleNodeIds.has(e.source_id) && visibleNodeIds.has(e.target_id);
   });
 
-  document.getElementById('slds-node-metric').innerText = `${visibleNodes.length} Nodes • ${visibleEdges.length} Edges`;
+  const metricEl = document.getElementById('slds-node-metric');
+  if (metricEl) {
+    metricEl.innerText = `${visibleNodes.length} Nodes • ${visibleEdges.length} Edges`;
+  }
 
   const cyElements = [];
   visibleNodes.forEach(n => {
@@ -104,135 +112,219 @@ function renderSalesforceGraph() {
     });
   });
 
-  // Cytoscape with Salesforce Lightning Clean Crisp Theme
+  // Cytoscape with Anti-Congestion Label Wrapping & Dynamic Highlighting
   cy = cytoscape({
     container: container,
     elements: cyElements,
+    boxSelectionEnabled: false,
+    autounselectify: false,
     style: [
       {
         selector: 'node',
         style: {
           'label': 'data(name)',
-          'color': '#080707',
-          'font-size': '11px',
+          'color': '#0f172a',
+          'font-size': '10px',
           'font-family': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
           'font-weight': 600,
           'text-valign': 'bottom',
-          'text-margin-y': 6,
-          'text-background-opacity': 0.95,
+          'text-halign': 'center',
+          'text-margin-y': 5,
+          'text-wrap': 'wrap',
+          'text-max-width': '95px',
+          'text-overflow-wrap': 'break-word',
+          'line-height': 1.15,
+          'text-background-opacity': 0.96,
           'text-background-color': '#ffffff',
-          'text-background-padding': '3px',
+          'text-background-padding': '3px 5px',
           'text-background-shape': 'roundrectangle',
+          'text-border-color': '#cbd5e1',
+          'text-border-width': 1,
+          'text-border-opacity': 0.85,
           'background-color': function(ele) {
             const lbl = (ele.data('label') || '').toLowerCase();
             if (lbl === 'policy') return '#0176d3';    // Salesforce Action Blue
-            if (lbl === 'threshold') return '#2e844a'; // Salesforce Success Green
+            if (lbl === 'threshold') return '#2e844a'; // Success Green
             if (lbl === 'person') return '#00a1e0';    // Sky Blue Principal
             if (lbl === 'channel') return '#ea001e';   // Salesforce Danger Red
             if (lbl === 'system') return '#fe9339';    // Warning Orange System
             return '#706e6b';
           },
-          'width': 30,
-          'height': 30,
-          'border-width': 2,
+          'width': 34,
+          'height': 34,
+          'border-width': 2.5,
           'border-color': '#ffffff',
           'border-opacity': 1.0,
-          'transition-property': 'width, height, border-width, border-color',
-          'transition-duration': '0.12s'
+          'transition-property': 'width, height, border-width, border-color, opacity',
+          'transition-duration': '0.15s'
         }
       },
       {
         selector: 'node:selected',
         style: {
           'border-color': '#001639',
-          'border-width': 4,
-          'width': 38,
-          'height': 38
+          'border-width': 3.5,
+          'width': 42,
+          'height': 42,
+          'font-weight': 700,
+          'font-size': '11px',
+          'text-border-color': '#0176d3',
+          'text-border-width': 1.5,
+          'z-index': 999
         }
       },
       {
         selector: 'edge',
         style: {
-          'label': 'data(label)',
-          'color': '#706e6b',
-          'font-size': '9px',
-          'font-family': 'monospace',
           'curve-style': 'bezier',
           'target-arrow-shape': 'triangle',
-          'target-arrow-color': '#b0adab',
-          'line-color': '#dddbda',
-          'width': 1.8,
-          'arrow-scale': 0.8,
+          'target-arrow-color': '#94a3b8',
+          'line-color': '#cbd5e1',
+          'width': 1.5,
+          'arrow-scale': 0.85,
+          'label': function(ele) {
+            return showEdgeLabels ? ele.data('label') : '';
+          },
+          'font-size': '8px',
+          'font-family': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          'font-weight': 700,
+          'text-transform': 'uppercase',
+          'color': '#475569',
           'text-rotation': 'autorotate',
-          'text-margin-y': -6
+          'text-background-opacity': 0.95,
+          'text-background-color': '#f8fafc',
+          'text-background-padding': '2px 4px',
+          'text-background-shape': 'roundrectangle',
+          'text-border-color': '#cbd5e1',
+          'text-border-width': 0.8,
+          'text-border-opacity': 0.8,
+          'transition-property': 'line-color, target-arrow-color, width, opacity',
+          'transition-duration': '0.15s'
         }
       },
       {
-        selector: 'edge:selected',
+        selector: 'edge:selected, edge.highlighted',
         style: {
+          'label': 'data(label)',
           'line-color': '#0176d3',
           'target-arrow-color': '#0176d3',
-          'width': 3.0
+          'width': 2.6,
+          'font-size': '9px',
+          'color': '#001639',
+          'text-background-opacity': 1.0,
+          'text-background-color': '#eff6ff',
+          'text-border-color': '#0176d3',
+          'text-border-width': 1.2,
+          'z-index': 998
+        }
+      },
+      {
+        selector: '.faded',
+        style: {
+          'opacity': 0.2
         }
       }
     ],
     layout: getLayoutConfig(currentLayout)
   });
 
-  // Select node and update right-side detail card
+  // Tap node: Focus neighborhood, highlight edges, update details
   cy.on('tap', 'node', function(evt) {
     const node = evt.target;
+    focusNodeNeighborhood(node);
     displayRecordDetail(node);
   });
 
-  // Auto-select first policy if none selected
+  // Tap empty canvas: Reset focus
+  cy.on('tap', function(evt) {
+    if (evt.target === cy) {
+      cy.elements().removeClass('faded highlighted');
+    }
+  });
+
+  // Auto-select first policy if available
   if (visibleNodes.length > 0) {
     const firstPolicy = cy.nodes("[label = 'Policy']").first();
     if (firstPolicy.length > 0) {
       firstPolicy.select();
+      focusNodeNeighborhood(firstPolicy);
       displayRecordDetail(firstPolicy);
     }
   }
 }
 
-// Layout Configuration Factory (Provides clean, non-messy layouts)
+// Highlight node neighborhood and reveal incident edge labels
+function focusNodeNeighborhood(node) {
+  const neighborhood = node.neighborhood().add(node);
+  const connectedEdges = node.connectedEdges();
+
+  cy.elements().removeClass('faded highlighted');
+  
+  // Fade everything outside neighborhood
+  cy.elements().not(neighborhood).addClass('faded');
+  
+  // Highlight connected edges with visible badges
+  connectedEdges.addClass('highlighted');
+}
+
+// Layout Configuration Factory with Spacing Multiplier & Collision Safeguards
 function getLayoutConfig(layoutName) {
   if (layoutName === 'concentric') {
     return {
       name: 'concentric',
       fit: true,
-      padding: 40,
+      padding: 60,
+      minNodeSpacing: 95 * spacingMultiplier,
+      spacingFactor: spacingMultiplier,
       concentric: function(node) {
         const lbl = node.data('label');
         if (lbl === 'Policy') return 3;
         if (lbl === 'Threshold' || lbl === 'Channel') return 2;
         return 1;
       },
-      levelWidth: () => 1
+      levelWidth: () => 1,
+      avoidOverlap: true,
+      nodeDimensionsIncludeLabels: true,
+      animate: true,
+      animationDuration: 450
     };
   } else if (layoutName === 'breadthfirst') {
     return {
       name: 'breadthfirst',
       fit: true,
       directed: true,
-      padding: 40,
-      spacingFactor: 1.2
+      padding: 60,
+      spacingFactor: 2.2 * spacingMultiplier,
+      avoidOverlap: true,
+      nodeDimensionsIncludeLabels: true,
+      animate: true,
+      animationDuration: 450
     };
   } else if (layoutName === 'circle') {
     return {
       name: 'circle',
       fit: true,
-      padding: 40
+      padding: 60,
+      spacingFactor: spacingMultiplier * 1.5,
+      avoidOverlap: true,
+      nodeDimensionsIncludeLabels: true,
+      animate: true,
+      animationDuration: 450
     };
   } else {
     return {
       name: 'cose',
       fit: true,
-      padding: 50,
-      nodeRepulsion: 500000,
-      idealEdgeLength: 120,
-      componentSpacing: 120,
-      animate: false
+      padding: 60,
+      nodeRepulsion: function() { return 3500000 * spacingMultiplier; },
+      idealEdgeLength: function() { return 180 * spacingMultiplier; },
+      edgeElasticity: function() { return 0.05; },
+      nodeOverlap: 40,
+      componentSpacing: 220 * spacingMultiplier,
+      avoidOverlap: true,
+      nodeDimensionsIncludeLabels: true,
+      animate: true,
+      animationDuration: 500
     };
   }
 }
@@ -240,53 +332,111 @@ function getLayoutConfig(layoutName) {
 // Display Salesforce Record Detail
 function displayRecordDetail(node) {
   activeRecordId = node.data('id');
-  document.getElementById('rec-name').innerText = node.data('name');
+  const nameEl = document.getElementById('rec-name');
+  if (nameEl) nameEl.innerText = node.data('name');
   
   const typePill = document.getElementById('record-type-pill');
-  typePill.innerText = `${node.data('label')} RECORD`;
+  if (typePill) typePill.innerText = `${node.data('label')} RECORD`;
 
   const conf = node.data('confidence') || 1.0;
-  document.getElementById('rec-confidence').innerText = `${conf.toFixed(2)} (Verified)`;
+  const confEl = document.getElementById('rec-confidence');
+  if (confEl) confEl.innerText = `${conf.toFixed(2)} (Verified)`;
 
   const props = node.data('properties') || {};
-  document.getElementById('rec-dept').innerText = props.department || 'Enterprise Core';
+  const deptEl = document.getElementById('rec-dept');
+  if (deptEl) deptEl.innerText = props.department || 'Enterprise Core';
 
   // Relations list
   const edges = node.connectedEdges();
-  document.getElementById('rec-edge-count').innerText = edges.length;
+  const countEl = document.getElementById('rec-edge-count');
+  if (countEl) countEl.innerText = edges.length;
+  
   const relList = document.getElementById('rec-relations-list');
-  relList.innerHTML = '';
+  if (relList) {
+    relList.innerHTML = '';
+    if (edges.length === 0) {
+      relList.innerHTML = '<div class="text-slate-400">No active relations linked.</div>';
+    } else {
+      edges.forEach(e => {
+        const isOut = e.data('source') === node.data('id');
+        const otherId = isOut ? e.data('target') : e.data('source');
+        const otherNode = cy.getElementById(otherId);
+        const otherName = otherNode.length > 0 ? otherNode.data('name') : otherId;
 
-  if (edges.length === 0) {
-    relList.innerHTML = '<div class="text-slate-400">No active relations linked.</div>';
-  } else {
-    edges.forEach(e => {
-      const isOut = e.data('source') === node.data('id');
-      const otherId = isOut ? e.data('target') : e.data('source');
-      const otherNode = cy.getElementById(otherId);
-      const otherName = otherNode.length > 0 ? otherNode.data('name') : otherId;
-
-      const row = document.createElement('div');
-      row.className = 'p-2 rounded bg-slate-50 border border-slate-200 flex justify-between items-center text-slate-800';
-      row.innerHTML = `
-        <span class="text-[#0176d3] font-bold text-[11px]">${isOut ? '→' : '←'} ${e.data('label')}</span>
-        <span class="font-semibold text-slate-900 truncate max-w-[140px] text-[11px]">${otherName}</span>
-      `;
-      relList.appendChild(row);
-    });
+        const row = document.createElement('div');
+        row.className = 'p-2 rounded bg-slate-50 border border-slate-200 flex justify-between items-center text-slate-800 cursor-pointer hover:bg-blue-50/50';
+        row.onclick = () => {
+          if (otherNode.length > 0) {
+            cy.elements().unselect();
+            otherNode.select();
+            focusNodeNeighborhood(otherNode);
+            displayRecordDetail(otherNode);
+          }
+        };
+        row.innerHTML = `
+          <span class="text-[#0176d3] font-bold text-[11px]">${isOut ? '→' : '←'} ${e.data('label')}</span>
+          <span class="font-semibold text-slate-900 truncate max-w-[140px] text-[11px]">${otherName}</span>
+        `;
+        relList.appendChild(row);
+      });
+    }
   }
 
   // Metadata Box
   const metaBox = document.getElementById('rec-metadata-box');
-  if (Object.keys(props).length === 0) {
-    metaBox.innerText = 'No standard custom fields defined.';
+  if (metaBox) {
+    if (Object.keys(props).length === 0) {
+      metaBox.innerText = 'No standard custom fields defined.';
+    } else {
+      metaBox.innerHTML = Object.entries(props).map(([k, v]) => `
+        <div class="flex justify-between py-0.5 border-b border-slate-100 last:border-0">
+          <span class="text-slate-500">${k}:</span>
+          <span class="font-bold text-slate-900">${v}</span>
+        </div>
+      `).join('');
+    }
+  }
+}
+
+// Spacing Multiplier Handler
+function onSpacingChange(val) {
+  spacingMultiplier = parseFloat(val);
+  const valEl = document.getElementById('spacing-val');
+  if (valEl) valEl.innerText = `${spacingMultiplier.toFixed(1)}x`;
+  
+  if (cy) {
+    cy.layout(getLayoutConfig(currentLayout)).run();
+  }
+}
+
+// Toggle Edge Labels
+function toggleEdgeLabels(checked) {
+  showEdgeLabels = checked;
+  if (cy) {
+    cy.style().update();
+  }
+}
+
+// Toggle Record Detail Panel (Full Width Graph)
+function toggleRecordPanel() {
+  const panel = document.getElementById('slds-record-panel');
+  const btn = document.getElementById('btn-toggle-panel');
+  if (!panel) return;
+
+  isPanelCollapsed = !isPanelCollapsed;
+  if (isPanelCollapsed) {
+    panel.classList.add('hidden');
+    if (btn) btn.classList.add('bg-blue-100', 'text-[#0176d3]');
   } else {
-    metaBox.innerHTML = Object.entries(props).map(([k, v]) => `
-      <div class="flex justify-between py-0.5 border-b border-slate-100 last:border-0">
-        <span class="text-slate-500">${k}:</span>
-        <span class="font-bold text-slate-900">${v}</span>
-      </div>
-    `).join('');
+    panel.classList.remove('hidden');
+    if (btn) btn.classList.remove('bg-blue-100', 'text-[#0176d3]');
+  }
+
+  if (cy) {
+    setTimeout(() => {
+      cy.resize();
+      cy.fit();
+    }, 100);
   }
 }
 
@@ -309,11 +459,7 @@ function toggleTypeFilter(type) {
   activeTypeFilters[type] = !activeTypeFilters[type];
   const btn = document.getElementById(`btn-f-${type.toLowerCase()}`);
   if (btn) {
-    if (activeTypeFilters[type]) {
-      btn.style.opacity = '1.0';
-    } else {
-      btn.style.opacity = '0.35';
-    }
+    btn.style.opacity = activeTypeFilters[type] ? '1.0' : '0.35';
   }
   renderSalesforceGraph();
 }
@@ -333,18 +479,19 @@ function onSearchEntity(query) {
     const match = (n.data('name') || '').toLowerCase().includes(q);
     if (match) {
       n.style('opacity', 1.0);
-      n.style('width', 40);
-      n.style('height', 40);
+      n.style('width', 42);
+      n.style('height', 42);
     } else {
       n.style('opacity', 0.15);
-      n.style('width', 22);
-      n.style('height', 22);
+      n.style('width', 24);
+      n.style('height', 24);
     }
   });
 }
 
 function refreshGraph() {
-  document.getElementById('slds-global-search').value = '';
+  const searchEl = document.getElementById('slds-global-search');
+  if (searchEl) searchEl.value = '';
   loadGraphData();
 }
 
@@ -355,14 +502,7 @@ function synthesizeSkillFromRecord() {
 function isolateCluster() {
   if (!activeRecordId || !cy) return;
   const node = cy.getElementById(activeRecordId);
-  const neighborhood = node.neighborhood().add(node);
-  cy.elements().forEach(el => {
-    if (neighborhood.contains(el)) {
-      el.style('opacity', 1.0);
-    } else {
-      el.style('opacity', 0.08);
-    }
-  });
+  focusNodeNeighborhood(node);
 }
 
 // Populate Records Table for Tab 4
@@ -395,8 +535,9 @@ function viewNodeInGraph(nodeId) {
     if (node.length > 0) {
       cy.elements().unselect();
       node.select();
+      focusNodeNeighborhood(node);
       displayRecordDetail(node);
-      cy.animate({ center: { eles: node }, zoom: 1.8 }, { duration: 400 });
+      cy.animate({ center: { eles: node }, zoom: 1.6 }, { duration: 400 });
     }
   }, 150);
 }
