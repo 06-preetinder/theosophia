@@ -1,4 +1,4 @@
-import pytest
+﻿import pytest
 from fastapi.testclient import TestClient
 from src.api.main import app, graph_db
 from src.graph.local_graph import GraphNode, GraphEdge
@@ -40,3 +40,28 @@ def test_api_lifecycle():
     res_mcp = client.post("/v1/mcp", json={"method": "tools/list", "id": 42})
     assert res_mcp.status_code == 200
     assert "tools" in res_mcp.json()["result"]
+
+    # 6. Ingest Stream Preset
+    res_ingest = client.post("/v1/knowledge/ingest-stream", json={"preset_id": "revolut_aml"})
+    assert res_ingest.status_code == 200
+    assert res_ingest.json()["success"] is True
+    assert len(res_ingest.json()["nodes_created"]) > 0
+
+    # 7. Simulate Rogue Agent Interception
+    res_sim = client.post("/v1/skills/simulate-agent", json={
+        "scenario": "rogue_jailbreak",
+        "requested_amount": 3500.0,
+        "kyc_level": 0
+    })
+    assert res_sim.status_code == 200
+    sim_data = res_sim.json()
+    assert sim_data["theosophia_guarded_agent"]["action_executed"] == "INTERCEPTED_AND_HALTED"
+    assert "AST" in sim_data["theosophia_guarded_agent"]["deterministic_guard"] or "amount" in sim_data["theosophia_guarded_agent"]["deterministic_guard"]
+
+    # 8. Export Compliance Dossier
+    res_dossier = client.get("/v1/compliance/dossier/export")
+    assert res_dossier.status_code == 200
+    dossier = res_dossier.json()
+    assert "dossier_id" in dossier
+    assert "cryptographic_fingerprint" in dossier
+    assert len(dossier["senior_management_functions"]) == 4

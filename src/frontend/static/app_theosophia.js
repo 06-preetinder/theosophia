@@ -643,3 +643,314 @@ window.addEventListener('DOMContentLoaded', () => {
   lucide.createIcons();
   loadGraphData();
 });
+
+// --- Ingestion Studio Controller ---
+let currentPresetId = 'revolut_aml';
+const PRESET_SCRIPTS = {
+  revolut_aml: {
+    dept: 'Compliance',
+    channel: '#compliance-sar-filings',
+    text: `Alex_Morgan (CCO, SMF16): Flagging suspicious international wire #WIRE-9821 for $48,500 outgoing to high-risk jurisdiction. Does originator have verified KYC Level 2 documentation?\nMarcus_Vance (MLRO, SMF17): Checking Jumio ID Verification API logs. Customer only has basic KYC Level 1. Under AML Policy BSA-01, wires exceeding the $10,000 CTR Limit require mandatory Level 2, and anything over $50,000 SAR Trigger requires direct MLRO approval.\nAlex_Morgan: Freeze transfer execution immediately. Mandate Proof of Address Geo-Audit and escalate to #compliance-sar-filings within 15 minutes.`
+  },
+  stripe_dispute: {
+    dept: 'Disputes',
+    channel: '#risk-disputes',
+    text: `Sarah_Jenkins (Support Lead): Merchant AcmeCorp is disputing a $750 chargeback. Demanding immediate automated refund credit.\nElena_Rostova (Head of Fraud): Policy REF-04 explicitly enforces a strict $500 Auto-Refund Limit for bot resolutions. Any dispute above $500 requires senior analyst signoff and KYC Level 2 before Stripe Gateway Credit API invocation.\nSarah_Jenkins: Escalating to #risk-disputes. Halting automated agent action.`
+  },
+  wise_fx: {
+    dept: 'Treasury',
+    channel: '#treasury-risk-escalations',
+    text: `Dave_Chen (Head of Trading Ops): Market volatility alert: EUR/USD swap spread widened 45bps. FX Trading Bot #04 attempted a $6,200,000 overnight swap to rebalance liquidity.\nAlex_Morgan (Chief Compliance): Halt execution. FX Overnight Position Limit POL-99 mandates an absolute $5,000,000 Notional Cap per automated desk algorithm. Route excess to #treasury-risk-escalations with dual trader authorization.`
+  }
+};
+
+function openIngestionModal() {
+  const m = document.getElementById('modal-ingest-stream');
+  if (m) m.classList.remove('hidden');
+  loadScenarioPreset('revolut_aml');
+}
+
+function closeIngestionModal() {
+  const m = document.getElementById('modal-ingest-stream');
+  if (m) m.classList.add('hidden');
+}
+
+function loadScenarioPreset(id) {
+  currentPresetId = id;
+  ['revolut', 'stripe', 'wise'].forEach(p => {
+    const btn = document.getElementById(`btn-preset-${p}`);
+    if (btn) {
+      if (id.includes(p)) {
+        btn.className = "p-2.5 rounded bg-[#c4a7e7]/15 border border-[#c4a7e7]/50 text-left hover:border-[#c4a7e7] transition-all cursor-pointer";
+      } else {
+        btn.className = "p-2.5 rounded bg-white/5 border border-white/15 text-left hover:border-white/40 transition-all cursor-pointer";
+      }
+    }
+  });
+
+  const preset = PRESET_SCRIPTS[id];
+  if (preset) {
+    const rawEl = document.getElementById('ingest-raw-text');
+    if (rawEl) rawEl.value = preset.text;
+    const chEl = document.getElementById('ingest-channel-tag');
+    if (chEl) chEl.innerText = preset.channel;
+    const deptEl = document.getElementById('ingest-dept-tag');
+    if (deptEl) deptEl.innerText = `${preset.dept}`;
+  }
+}
+
+async function dispatchLiveIngestion() {
+  const btn = document.getElementById('btn-dispatch-ingest');
+  if (btn) {
+    btn.innerText = "Extracting & Synthesizing...";
+    btn.classList.add('animate-pulse');
+  }
+
+  const rawText = document.getElementById('ingest-raw-text').value;
+
+  try {
+    const res = await fetch('/v1/knowledge/ingest-stream', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        preset_id: currentPresetId,
+        raw_text: rawText
+      })
+    });
+    const data = await res.json();
+
+    closeIngestionModal();
+    switchTab('graph-view');
+
+    // Reload and animate Cytoscape
+    await loadGraphData();
+
+    // Pulse notification
+    const metricEl = document.getElementById('graph-node-metric');
+    if (metricEl) {
+      metricEl.innerText = `${data.total_nodes} NODES • ${data.total_edges} EDGES (INGESTED)`;
+      metricEl.className = "text-[11px] text-[#fce8a6] font-bold whitespace-nowrap animate-bounce";
+      setTimeout(() => {
+        metricEl.className = "text-[11px] text-[#c4a7e7] font-semibold whitespace-nowrap";
+      }, 3500);
+    }
+
+  } catch (err) {
+    console.error("Ingestion failed:", err);
+  } finally {
+    if (btn) {
+      btn.innerHTML = '<i data-lucide="sparkles" class="w-4 h-4 inline mr-1"></i> Run Extraction &amp; Synthesize Graph';
+      btn.classList.remove('animate-pulse');
+    }
+    lucide.createIcons();
+  }
+}
+
+// --- Rogue Agent Attack Simulation ---
+async function runRogueAgentSimulation() {
+  switchTab('runtime-view');
+  const statusPill = document.getElementById('sim-status-pill');
+  const tracesStream = document.getElementById('sim-traces-stream');
+
+  if (statusPill) {
+    statusPill.className = "px-3 py-1 rounded text-xs font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse";
+    statusPill.innerText = "EVALUATING ROGUE INJECTION ATTACK...";
+  }
+
+  try {
+    const res = await fetch('/v1/skills/simulate-agent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        scenario: 'rogue_jailbreak',
+        requested_amount: 3500.0,
+        kyc_level: 0
+      })
+    });
+    const data = await res.json();
+
+    if (statusPill) {
+      statusPill.className = "px-3 py-1 rounded text-xs font-mono font-bold bg-rose-500/20 text-rose-400 border border-rose-500/50";
+      statusPill.innerText = "INTERCEPTED & HALTED (1.4ms)";
+    }
+
+    if (tracesStream) {
+      tracesStream.innerHTML = '';
+
+      // Render alert banner
+      const alertBox = document.createElement('div');
+      alertBox.className = 'p-3 rounded bg-rose-950/40 border border-rose-500/50 text-rose-200 text-xs font-mono mb-3 flex items-center justify-between shadow-[0_0_20px_rgba(244,63,94,0.2)]';
+      alertBox.innerHTML = `
+        <div>
+          <span class="font-bold block uppercase text-[11px] text-rose-400 flex items-center gap-1.5">
+            <i data-lucide="shield-alert" class="w-4 h-4"></i> Deterministic AST Interceptor Fired
+          </span>
+          Violation: Requested payout $3,500.00 violates AST guard (amount &le; 500.0 and kyc_level &ge; 2)
+        </div>
+        <div class="text-right">
+          <span class="px-2 py-0.5 rounded bg-black text-[#c4a7e7] font-bold border border-[#c4a7e7]/30 text-[10px] block mb-1">#risk-disputes</span>
+          <span class="text-[10px] text-white/50 font-mono">${data.theosophia_guarded_agent.smcr_audit_hash}</span>
+        </div>
+      `;
+      tracesStream.appendChild(alertBox);
+
+      data.theosophia_guarded_agent.traces.forEach((t, i) => {
+        const isPass = t.status === 'PASSED';
+        const card = document.createElement('div');
+        card.className = `p-3 rounded border ${isPass ? 'bg-black/50 border-white/10' : 'bg-rose-950/30 border-rose-500/30'} space-y-1`;
+        card.innerHTML = `
+          <div class="flex justify-between items-center text-xs">
+            <span class="font-bold font-mono ${isPass ? 'text-emerald-400' : 'text-rose-400'}">[Step ${i+1}] ${t.step_id}</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 text-white/70 border border-white/10 uppercase">${t.action}</span>
+          </div>
+          <p class="text-white/90 text-xs font-sans">${t.output_message}</p>
+          <div class="text-[10px] text-white/50 font-mono">AST Guard: ${t.guard_evaluated}</div>
+        `;
+        tracesStream.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+  } catch (err) {
+    console.error("Simulation error:", err);
+  }
+}
+
+// --- Compliance Export Modal ---
+let cachedDossier = null;
+
+async function openComplianceExportModal() {
+  const m = document.getElementById('modal-compliance-export');
+  if (m) m.classList.remove('hidden');
+  try {
+    const res = await fetch('/v1/compliance/dossier/export');
+    cachedDossier = await res.json();
+
+    const idEl = document.getElementById('exp-dossier-id');
+    if (idEl) idEl.innerText = cachedDossier.dossier_id;
+    const tsEl = document.getElementById('exp-timestamp');
+    if (tsEl) tsEl.innerText = cachedDossier.generated_timestamp;
+    const hashEl = document.getElementById('exp-hash');
+    if (hashEl) hashEl.innerText = cachedDossier.cryptographic_fingerprint;
+
+    const list = document.getElementById('exp-smf-list');
+    if (list) {
+      list.innerHTML = cachedDossier.senior_management_functions.map(f => `
+        <div class="p-2 rounded bg-white/[0.02] border border-white/5 flex justify-between items-center">
+          <div>
+            <span class="text-[#c4a7e7] font-bold">${f.function_id}:</span> 
+            <span class="text-white">${f.officer_name} (${f.role_title})</span>
+          </div>
+          <span class="text-[10px] text-white/40">${f.audit_channel}</span>
+        </div>
+      `).join('');
+    }
+
+  } catch (err) {
+    console.error("Failed to load compliance dossier:", err);
+  }
+}
+
+function closeComplianceExportModal() {
+  const m = document.getElementById('modal-compliance-export');
+  if (m) m.classList.add('hidden');
+}
+
+function downloadDossierJSON() {
+  if (!cachedDossier) return;
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(cachedDossier, null, 2));
+  const dl = document.createElement('a');
+  dl.setAttribute("href", dataStr);
+  dl.setAttribute("download", `${cachedDossier.dossier_id}.json`);
+  dl.click();
+}
+
+// --- Investor Pitch Tour Controller ---
+let currentTourStep = 1;
+const TOUR_STEPS = [
+  {
+    step: 1,
+    title: "The $500B Problem: Enterprise Chaos",
+    badge: "Step 1 of 4 • The Problem",
+    tab: "graph-view",
+    desc: "Fintech tribal knowledge lives in messy Slack threads and Jira tickets. When AI agents are deployed, they make rogue payouts because their knowledge is outdated or hallucinated."
+  },
+  {
+    step: 2,
+    title: "The Living Brain: Bi-Temporal Graph",
+    badge: "Step 2 of 4 • The Brain",
+    tab: "graph-view",
+    desc: "Theosophia continuously extracts policies, thresholds, and role owners into a bi-temporal knowledge graph. Notice the celestial nodes glowing: lavender for policies, gold for financial limits."
+  },
+  {
+    step: 3,
+    title: "The Guardrail: AST Interceptor",
+    badge: "Step 3 of 4 • The Guardrail",
+    tab: "runtime-view",
+    desc: "Prompt engineering fails when users manipulate agents. Theosophia compiles domain policies into deterministic AST execution guards, intercepting unapproved payouts in under 2ms."
+  },
+  {
+    step: 4,
+    title: "The Shield: SM&CR Regulatory Audit",
+    badge: "Step 4 of 4 • Compliance Ledger",
+    tab: "compliance-view",
+    desc: "Fintech executives have personal legal liability under FCA / SEC SM&CR rules. Theosophia provides cryptographic proof of who governed every policy and why an agent took an action."
+  }
+];
+
+function startInvestorTour() {
+  currentTourStep = 1;
+  const hud = document.getElementById('investor-tour-hud');
+  if (hud) hud.classList.remove('hidden');
+  renderTourStep();
+}
+
+function exitInvestorTour() {
+  const hud = document.getElementById('investor-tour-hud');
+  if (hud) hud.classList.add('hidden');
+}
+
+function nextTourStep() {
+  if (currentTourStep < 4) {
+    currentTourStep++;
+    renderTourStep();
+  } else {
+    exitInvestorTour();
+  }
+}
+
+function prevTourStep() {
+  if (currentTourStep > 1) {
+    currentTourStep--;
+    renderTourStep();
+  }
+}
+
+function renderTourStep() {
+  const s = TOUR_STEPS[currentTourStep - 1];
+  switchTab(s.tab);
+
+  const badgeEl = document.getElementById('tour-step-badge');
+  if (badgeEl) badgeEl.innerText = s.badge;
+  const titleEl = document.getElementById('tour-title');
+  if (titleEl) titleEl.innerText = s.title;
+  const descEl = document.getElementById('tour-desc');
+  if (descEl) descEl.innerText = s.desc;
+
+  const btnPrev = document.getElementById('btn-tour-prev');
+  if (btnPrev) {
+    btnPrev.style.visibility = currentTourStep === 1 ? 'hidden' : 'visible';
+  }
+
+  const btnNext = document.getElementById('btn-tour-next');
+  if (btnNext) {
+    btnNext.innerText = currentTourStep === 4 ? "Complete Tour ✦" : "Next Step →";
+  }
+
+  if (s.step === 3) {
+    setTimeout(() => {
+      runRogueAgentSimulation();
+    }, 350);
+  }
+}
