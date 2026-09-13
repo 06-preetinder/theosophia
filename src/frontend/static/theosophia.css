@@ -1,0 +1,227 @@
+﻿/* Theosophia Ethereal Obsidian Design System (Inspired by jia.build & Portfolio) */
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --color-black: #000000;
+  --color-void: #050508;
+  --color-card: rgba(12, 12, 16, 0.85);
+  --color-white: #ffffff;
+  --color-lavender: #c4a7e7;
+  --color-gold: #fce8a6;
+  --color-gold-subtle: #f7d77e;
+  --color-dim: rgba(255, 255, 255, 0.65);
+  --color-dim-more: rgba(255, 255, 255, 0.4);
+
+  --font-serif: "EB Garamond", Garamond, Georgia, serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --border-hairline: 0.5px solid rgba(255, 255, 255, 0.18);
+  --border-hairline-dim: 0.5px solid rgba(255, 255, 255, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+::selection {
+  background: rgba(196, 167, 231, 0.3);
+  color: #ffffff;
+}
+
+/* Typography Helpers */
+.font-serif {
+  font-family: var(--font-serif);
+}
+.font-mono {
+  font-family: var(--font-mono);
+}
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+/* Ethereal Text Glows matching jia.build */
+.glow-text {
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.7), 0 0 28px rgba(255, 255, 255, 0.3);
+}
+
+.glow-lavender {
+  color: #c4a7e7;
+  text-shadow: 0 0 14px rgba(196, 167, 231, 0.8), 0 0 28px rgba(196, 167, 231, 0.4);
+}
+
+.glow-gold-divine {
+  color: #fce8a6;
+  text-shadow: 0 0 14px rgba(247, 215, 115, 0.85), 0 0 28px rgba(245, 197, 66, 0.55), 0 0 45px rgba(220, 160, 30, 0.25);
+}
+
+.glow-gold-subtle {
+  color: #f7d77e;
+  text-shadow: 0 0 10px rgba(245, 197, 66, 0.6), 0 0 22px rgba(245, 197, 66, 0.3);
+}
+
+.drop-glow {
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.3));
+}
+
+/* Hairline Border Containers */
+.border-hairline {
+  border: 0.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 0.25rem;
+}
+
+.border-hairline-dim {
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.25rem;
+}
+
+.border-hairline-lavender {
+  border: 0.5px solid rgba(196, 167, 231, 0.4);
+  border-radius: 0.25rem;
+}
+
+/* Glassmorphic Pods */
+.glass-pod {
+  background: var(--color-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 0.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.25rem;
+}
+
+/* Minimalist Dark Header */
+.theosophia-header {
+  height: 52px;
+  background-color: #000000;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
+
+/* Context Navigation Tabs */
+.theosophia-tabs {
+  height: 42px;
+  background-color: #050508;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.theosophia-tab-item {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.18s ease;
+  letter-spacing: 0.02em;
+}
+
+.theosophia-tab-item:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.theosophia-tab-item.active {
+  color: var(--color-lavender);
+  border-bottom-color: var(--color-lavender);
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(196, 167, 231, 0.5);
+}
+
+/* Celestial Cytoscape Graph Canvas */
+#cy {
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Minimalist Action Buttons */
+.theosophia-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  border-radius: 0.2rem;
+  border: 0.5px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.theosophia-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+}
+
+.theosophia-btn-brand {
+  border-color: rgba(196, 167, 231, 0.6);
+  background: rgba(196, 167, 231, 0.12);
+  color: #c4a7e7;
+}
+
+.theosophia-btn-brand:hover {
+  background: rgba(196, 167, 231, 0.25);
+  border-color: #c4a7e7;
+  box-shadow: 0 0 16px rgba(196, 167, 231, 0.4);
+  color: #ffffff;
+}
+
+/* Sleek Minimalist Scrollbars */
+.thoughts-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.thoughts-scroll::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.thoughts-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.thoughts-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.thoughts-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
